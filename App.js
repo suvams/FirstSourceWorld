@@ -1,10 +1,14 @@
-import { NavigationContainer } from '@react-navigation/native';
-import AppStack from './src/navigations/appStack';
+import { NavigationContainer } from "@react-navigation/native";
+import AppStack from "./src/navigations/appStack";
+import { Provider } from "react-redux";
+import { store } from "./src/rtkQuery/store";
 
 export default function App() {
   return (
     <NavigationContainer>
-      <AppStack />
+      <Provider store={store}>
+        <AppStack />
+      </Provider>
     </NavigationContainer>
   );
 }
