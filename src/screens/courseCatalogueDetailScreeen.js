@@ -8,9 +8,16 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { RenderHTML } from "react-native-render-html";
-import { useGetDataByIdQuery } from "../rtkQuery/getData";
+import { Picker } from "@react-native-picker/picker";
+import {
+  useGetCourseCatalogueDetailDataByIdQuery,
+  usePostApplyForTheCourseMutation,
+} from "../rtkQuery/courseCatalogueDetailSlice";
+import { useGetAccountListDataQuery } from "../rtkQuery/accountListSlice";
+import { useLazyGetAccountEntityListDataQuery } from "../rtkQuery/accountEntityListSlice";
 
 const showAlert = () =>
   Alert.alert(
@@ -57,13 +64,68 @@ const showAlert1 = () =>
     }
   );
 
-const DetailScreen = ({ route }) => {
-  console.log(route.params.item._id);
-  const { data, isLoading, error } = useGetDataByIdQuery(route.params.item._id);
-  console.log("data", data);
+const CourseCatalogueDetailScreen = ({ route }) => {
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [selectedAccountEntity, setSelectedAccountEntity] = useState(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [account, setAccount] = useState("");
+  const [entity, setEntity] = useState("");
+  const [isLoading3, setIsLoading3] = useState(false);
 
-  if (!data) {
-    return <Text>Loading</Text>;
+  // console.log(route.params.item._id);
+  const { data, isLoading, error } = useGetCourseCatalogueDetailDataByIdQuery(
+    route.params.item._id
+  );
+  const { data: accounts, isLoading1, error1 } = useGetAccountListDataQuery();
+
+  const [lazyFetchAccountEntity, { data: accountEntity, isFetching }] =
+    useLazyGetAccountEntityListDataQuery();
+  const [postApplyForTheCourse, isLoading2, isSuccess, isError] =
+    usePostApplyForTheCourseMutation();
+  React.useEffect(() => {
+    if (!selectedAccount) return;
+    const handleFetchAccountEntityName = async (id) => {
+      lazyFetchAccountEntity(id).unwrap();
+    };
+    handleFetchAccountEntityName(selectedAccount?._id);
+  }, [selectedAccount]);
+
+  const handleSubmit = async () => {
+    setIsLoading3(true);
+    await postApplyForTheCourse({
+      account: "myAccount",
+      entity: "myEntity",
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+    });
+    setIsLoading3(false);
+  };
+  // console.log("data", data);
+
+  // if (!data) {
+  //   return <Text>Loading</Text>;
+  // }
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>An error occurred: {error.message}</Text>
+      </View>
+    );
   }
   return (
     <View>
@@ -211,10 +273,64 @@ const DetailScreen = ({ route }) => {
           <View style={{ borderWidth: 0.5, padding: 10, borderRadius: 10 }}>
             <Text style={{ fontSize: 20 }}>Apply for Course</Text>
             <View style={{ height: 10 }} />
-            <TextInput placeholder="First Name" style={styles.textInput} />
-            <TextInput placeholder="Last Name" style={styles.textInput} />
-            <TextInput placeholder="Email Address" style={styles.textInput} />
-            <TextInput placeholder="Phone" style={styles.textInput} />
+            <TextInput
+              placeholder="First Name"
+              value={firstName}
+              style={styles.textInput}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              placeholder="Last Name"
+              value={lastName}
+              style={styles.textInput}
+              onChangeText={setLastName}
+            />
+            <TextInput
+              placeholder="Email"
+              value={email}
+              style={styles.textInput}
+              onChangeText={setEmail}
+            />
+            <TextInput
+              placeholder="Phone"
+              value={phone}
+              style={styles.textInput}
+              onChangeText={setPhone}
+            />
+            <View style={styles.btncontainer}>
+              <Picker
+                selectedValue={selectedAccount}
+                onValueChange={(itemValue) => {
+                  setSelectedAccount(itemValue);
+                  setSelectedAccountEntity(null);
+                }}
+              >
+                <Picker.Item label="Select Agency" value={null} />
+                {accounts?.map((item) => (
+                  <Picker.Item label={item.name} value={item} key={item.name} />
+                ))}
+              </Picker>
+            </View>
+            {selectedAccount && (
+              <View style={styles.btncontainer}>
+                <Picker
+                  selectedValue={selectedAccountEntity}
+                  onValueChange={(itemValue) => {
+                    setSelectedAccountEntity(itemValue);
+                  }}
+                >
+                  <Picker.Item label="Select Agency" value={null} />
+                  {accountEntity?.map((item) => (
+                    <Picker.Item
+                      label={item.name}
+                      value={item._id}
+                      key={item._id}
+                    />
+                  ))}
+                </Picker>
+              </View>
+            )}
+
             <TextInput
               defaultValue={
                 "I am interested in applying for" +
@@ -227,7 +343,7 @@ const DetailScreen = ({ route }) => {
               style={[styles.textInput, { fontSize: 17 }]}
               multiline={true}
             />
-            <TouchableOpacity onPress={() => showAlert1(true)}>
+            <TouchableOpacity onPress={handleSubmit} disabled={isLoading3}>
               <View
                 style={{
                   backgroundColor: "#ffc6c4",
@@ -246,7 +362,7 @@ const DetailScreen = ({ route }) => {
     </View>
   );
 };
-export default DetailScreen;
+export default CourseCatalogueDetailScreen;
 const styles = StyleSheet.create({
   textInput: {
     width: "100%",
@@ -280,5 +396,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#DCDCDC",
     alignSelf: "center",
     padding: 5,
+  },
+  btncontainer: {
+    width: "100%",
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    alignSelf: "center",
+    fontSize: 17,
+    justifyContent: "space-between",
+    marginTop: 10,
   },
 });

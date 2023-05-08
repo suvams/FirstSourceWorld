@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DetailScreen from "../screens/detailScreen";
-import FirstScreen from "../screens/firstScreen";
+import CourseCataloguesScreen from "../screens/courseCataloguesScreen";
+import CourseCatalogueDetailScreen from "../screens/courseCatalogueDetailScreeen";
 
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
@@ -8,10 +8,10 @@ const AppStack = () => {
     <Stack.Navigator>
       <Stack.Screen
         name="First Source World"
-        component={FirstScreen}
+        component={CourseCataloguesScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Detail" component={DetailScreen} />
+      <Stack.Screen name="Detail" component={CourseCatalogueDetailScreen} />
     </Stack.Navigator>
   );
 };
