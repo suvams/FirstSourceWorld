@@ -143,3 +143,41 @@
 // });
 
 // export default Help;
+import React, { useState } from "react";
+import { FlatList, Text, View } from "react-native";
+
+const data = [
+  { id: 1, name: "John" },
+  { id: 2, name: "Jane" },
+  { id: 3, name: "Bob" },
+  { id: 4, name: "Alice" },
+  { id: 5, name: "Mike" },
+  { id: 6, name: "Sara" },
+];
+
+const ExampleScreen = () => {
+  const [count, setCount] = useState(data.length);
+
+  const renderItem = ({ item }) => (
+    <View>
+      <Text>{item.name}</Text>
+    </View>
+  );
+
+  const renderFooter = () => (
+    <View>
+      <Text>Total items: {count}</Text>
+    </View>
+  );
+
+  return (
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      ListFooterComponent={renderFooter}
+      keyExtractor={(item) => item.id.toString()}
+    />
+  );
+};
+
+export default ExampleScreen;

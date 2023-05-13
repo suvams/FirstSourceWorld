@@ -11,18 +11,10 @@ export const GetCourseCatalogueDetailApiCall = createApi({
       }),
     }),
     postApplyForTheCourse: builder.mutation({
-      query: (account, entity, firstName, lastName, email, phone, message) => ({
-        url: "/api/public/course-catalogues/apply",
+      query: (user) => ({
+        url: "/public/course-catalogues/apply",
         method: "POST",
-        body: {
-          firstName,
-          lastName,
-          email,
-          phone,
-          message,
-          account,
-          entity,
-        },
+        body: user,
       }),
     }),
   }),

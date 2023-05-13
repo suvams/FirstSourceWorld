@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Share,
 } from "react-native";
 import { RenderHTML } from "react-native-render-html";
 import { Picker } from "@react-native-picker/picker";
@@ -19,93 +20,97 @@ import {
 import { useGetAccountListDataQuery } from "../rtkQuery/accountListSlice";
 import { useLazyGetAccountEntityListDataQuery } from "../rtkQuery/accountEntityListSlice";
 
-const showAlert = () =>
-  Alert.alert(
-    "Share Link",
-    "Do you really want to share?",
-    [
-      {
-        text: "Share",
-        onPress: () => Alert.alert("Shared"),
-      },
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-    ],
-    {
-      cancelable: true,
-      onDismiss: () =>
-        Alert.alert(
-          "This share is dismissed by tapping outside of the alert dialog."
-        ),
-    }
-  );
-const showAlert1 = () =>
-  Alert.alert(
-    "Apply for the Courses",
-    "Do you really want to apply?",
-    [
-      {
-        text: "Apply",
-        onPress: () => Alert.alert("Applied"),
-      },
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-    ],
-    {
-      cancelable: true,
-      onDismiss: () =>
-        Alert.alert(
-          "This apply is dismissed by tapping outside of the alert dialog."
-        ),
-    }
-  );
-
 const CourseCatalogueDetailScreen = ({ route }) => {
-  const [selectedAccount, setSelectedAccount] = useState(null);
-  const [selectedAccountEntity, setSelectedAccountEntity] = useState(null);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
+  const scrollViewRef = useRef(null);
+
+  const handleApplyPress = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true });
+  };
+
   const [account, setAccount] = useState("");
   const [entity, setEntity] = useState("");
-  const [isLoading3, setIsLoading3] = useState(false);
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Doe");
+  const [email, setEmail] = useState("a@gamil.com");
+  const [phone, setPhone] = useState("98451545");
+  const [message, setMessage] = useState("Message");
 
   // console.log(route.params.item._id);
   const { data, isLoading, error } = useGetCourseCatalogueDetailDataByIdQuery(
     route.params.item._id
   );
+  const _id = route.params.item - _id;
+  // console.log(data);
   const { data: accounts, isLoading1, error1 } = useGetAccountListDataQuery();
 
   const [lazyFetchAccountEntity, { data: accountEntity, isFetching }] =
     useLazyGetAccountEntityListDataQuery();
-  const [postApplyForTheCourse, isLoading2, isSuccess, isError] =
+
+  const [postApplyForTheCourse, { isLoading2, isSuccess, isError }] =
     usePostApplyForTheCourseMutation();
+
   React.useEffect(() => {
-    if (!selectedAccount) return;
+    if (!account) return;
     const handleFetchAccountEntityName = async (id) => {
       lazyFetchAccountEntity(id).unwrap();
     };
-    handleFetchAccountEntityName(selectedAccount?._id);
-  }, [selectedAccount]);
+    handleFetchAccountEntityName(account?._id);
+  }, [account]);
+
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Check out this cool link: https://www.firstsourceworld.com/v2/courses-catalogue/${data?._id}`,
+        // url: `https://www.firstsourceworld.com/v2/courses-catalogue/${data._id}`,
+        title: "FirstSource World Course Catalogue",
+      });
+      if (result.action === Share.sharedAction) {
+        console.log("Link shared successfully");
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Link sharing dismissed");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   const handleSubmit = async () => {
-    setIsLoading3(true);
-    await postApplyForTheCourse({
-      account: "myAccount",
-      entity: "myEntity",
-      firstName,
-      lastName,
-      email,
-      phone,
-      message,
-    });
-    setIsLoading3(false);
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !account?._id.trim() ||
+      !entity.trim() ||
+      !message.trim()
+    ) {
+      alert("Please fill all the fields.");
+      return;
+    }
+    try {
+      const user = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        message: message,
+        account: account._id,
+        entity: entity,
+      };
+      await postApplyForTheCourse(user).unwrap();
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+      setAccount("");
+      setEntity("");
+
+      alert("User created successfully!");
+    } catch (error) {
+      console.error("Error creating user:", error);
+      alert("Error creating user. Please try again later.");
+    }
   };
   // console.log("data", data);
 
@@ -129,7 +134,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
   }
   return (
     <View>
-      <ScrollView scrollIndicatorInsets={false}>
+      <ScrollView ref={scrollViewRef} scrollIndicatorInsets={false}>
         <View style={{ flexDirection: "row", marginRight: 15 }}></View>
         <View
           style={{
@@ -139,11 +144,26 @@ const CourseCatalogueDetailScreen = ({ route }) => {
             backgroundColor: "white",
           }}
         >
-          <Text style={{ fontSize: 30, fontWeight: "bold" }}>{data.title}</Text>
-          <View style={{ height: 10 }} />
-          <Text style={{ fontSize: 20, color: "blue" }}>
-            {data.university.title}
+          <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+            {data?.title}
           </Text>
+          <View style={{ height: 10 }} />
+
+          <Text style={{ fontSize: 20, color: "blue" }}>
+            {data?.university?.title}
+          </Text>
+          <View style={{ height: 10 }} />
+
+          <TouchableOpacity onPress={handleApplyPress}>
+            <View style={styles.textInput3}>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                  Apply for the Course
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
           <View style={{ height: 20 }} />
           <View style={{ flexDirection: "row" }}>
             <View
@@ -162,7 +182,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                 style={{ height: 18, width: 18 }}
               />
               <View style={{ width: 10 }} />
-              <Text style={{ fontSize: 18 }}>{data.location.name}</Text>
+              <Text style={{ fontSize: 18 }}>{data?.location?.name}</Text>
             </View>
             <View
               style={{
@@ -197,7 +217,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               />
             </View>
             <View style={{ flex: 0.9 }} />
-            <TouchableOpacity onPress={() => showAlert(true)}>
+            <TouchableOpacity onPress={handleShare}>
               <View style={styles.textInput3}>
                 <View style={{ flexDirection: "row" }}>
                   <Image
@@ -221,15 +241,15 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                   <Text
                     style={{ fontSize: 16, fontWeight: "300", color: "green" }}
                   >
-                    $ {data.tutionFee}
+                    $ {data?.tuitionFee}
                   </Text>
                   <View style={{ width: 5 }} />
                   <Text style={{ fontSize: 16, fontWeight: "300" }}>
-                    ({data.currency.code})
+                    ({data?.currency?.code})
                     <View style={{ width: 5 }} />
                   </Text>
                   <Text style={{ fontSize: 16, fontWeight: "300" }}>
-                    / {data.feeType}
+                    / {data?.feeType}
                   </Text>
                 </View>
               </View>
@@ -238,7 +258,9 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                 <Text style={{ fontSize: 15, fontWeight: "500" }}>
                   Study Field
                 </Text>
-                <Text style={{ fontSize: 16, fontWeight: "300" }}>Health</Text>
+                <Text style={{ fontSize: 16, fontWeight: "300" }}>
+                  {data?.field?.name}
+                </Text>
               </View>
               <View />
             </View>
@@ -257,7 +279,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               Overview
             </Text>
             <RenderHTML
-              source={{ html: data.summary + data.learningOutcomes }}
+              source={{ html: data?.summary + data?.learningOutcomes }}
               contentWidth={0}
               tagsStyles={{
                 p: {
@@ -299,10 +321,10 @@ const CourseCatalogueDetailScreen = ({ route }) => {
             />
             <View style={styles.btncontainer}>
               <Picker
-                selectedValue={selectedAccount}
+                selectedValue={account}
                 onValueChange={(itemValue) => {
-                  setSelectedAccount(itemValue);
-                  setSelectedAccountEntity(null);
+                  setAccount(itemValue);
+                  setEntity(null);
                 }}
               >
                 <Picker.Item label="Select Agency" value={null} />
@@ -311,15 +333,15 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                 ))}
               </Picker>
             </View>
-            {selectedAccount && (
+            {account && (
               <View style={styles.btncontainer}>
                 <Picker
-                  selectedValue={selectedAccountEntity}
+                  selectedValue={entity}
                   onValueChange={(itemValue) => {
-                    setSelectedAccountEntity(itemValue);
+                    setEntity(itemValue);
                   }}
                 >
-                  <Picker.Item label="Select Agency" value={null} />
+                  <Picker.Item label="Select Entity" value={null} />
                   {accountEntity?.map((item) => (
                     <Picker.Item
                       label={item.name}
@@ -335,25 +357,35 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               defaultValue={
                 "I am interested in applying for" +
                 " " +
-                data.title +
+                data?.title +
                 ",located at" +
                 " " +
-                data.location.name
+                data?.location?.name
               }
+              value={message}
+              onChangeText={setMessage}
               style={[styles.textInput, { fontSize: 17 }]}
               multiline={true}
             />
-            <TouchableOpacity onPress={handleSubmit} disabled={isLoading3}>
-              <View
-                style={{
-                  backgroundColor: "#ffc6c4",
-                  alignSelf: "center",
-                  padding: 10,
-                  marginTop: 15,
-                }}
+            <TouchableOpacity
+              onPress={handleSubmit}
+              disabled={isLoading}
+              style={{
+                backgroundColor: isLoading ? "grey" : "purple",
+                padding: 10,
+                borderRadius: 5,
+                alignSelf: "center",
+                marginTop: 20,
+                width: "100%",
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 18, alignSelf: "center" }}
               >
-                <Text>Apply Courses</Text>
-              </View>
+                {isLoading
+                  ? "Applying for the Courses..."
+                  : "Apply for the Courses"}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={{ height: 25 }} />
@@ -394,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0.5,
     backgroundColor: "#DCDCDC",
-    alignSelf: "center",
+    alignSelf: "flex-start",
     padding: 5,
   },
   btncontainer: {

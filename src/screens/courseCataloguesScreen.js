@@ -13,6 +13,7 @@ import {
   Dimensions,
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import {
@@ -29,39 +30,25 @@ import {
 } from "../rtkQuery/globalListSlice";
 import { useLazyGetUniversityListDataQuery } from "../rtkQuery/universityListSlice";
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const SCREEN_HEIGHT1 = Dimensions.get("screen").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [search, setSearch] = useState("");
-  const isClicked = useState(true);
-  const searchRef = useRef();
+  // const searchRef = useRef();
   const [showModal, setShowModal] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedSubLocation, setSelectedSubLocation] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   // RTK Query
-  // const { data, isLoading1, error1 } = useGetCourseCataloguesDataQuery();
-  // console.log(allData);
-  const [lazyCourseCatalogues, { data, isLoading, error }] =
-    useLazyGetCourseCataloguesDataQuery();
 
-  // const [lazyFeeRange, { data: feeRange, isFetching2 }] =
-  //   useLazyGetCourseCataloguesFeeRangeDataQuery();
-
-  // const lazyFeeRange1 = async () => {
-  //   await lazyFeeRange({
-  //     page: 1,
-  //     size: 10,
-  //     feeRange: [minPrice, maxPrice],
-  //   }).unwrap();
-  // };
-
-  // const [lazySearchAllFilter, { data: searchAll, isFetching3 }] =
-  //   useLazyGetSearchAllFilterDataQuery();
+  const [
+    lazyCourseCatalogues,
+    { data, isLoading, isFetching, error, refetch },
+  ] = useLazyGetCourseCataloguesDataQuery();
 
   const { data: locations, isLoading: loadingLocations } =
     useGetGlobalListDataQuery({
@@ -70,11 +57,9 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
       status: "Active",
     });
 
-  const [lazyFetchSubLocactions, { data: subLocations, isFetching }] =
-    useLazyGetGlobalListDataQuery();
+  const [lazyFetchSubLocactions] = useLazyGetGlobalListDataQuery();
 
-  const [lazyFetchTitles, { data: titles, isFetching1 }] =
-    useLazyGetUniversityListDataQuery();
+  const [lazyFetchTitles] = useLazyGetUniversityListDataQuery();
 
   const filteredCourse = React.useMemo(() => {
     return (
@@ -83,30 +68,8 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
       ) ?? []
     );
   }, [data, search]);
-  // console.log(JSON.stringify(filteredCourse));
 
-  // const handleSearchCourses = async () => {
-  //   setShowModal(false);
-
-  //   console.log({
-  //     university: selectedTitle,
-  //     subLocations: [selectedSubLocation],
-  //     page: 1,
-  //     size: 10,
-  //     feeRange: [minPrice, maxPrice],
-  //   });
-
-  //   await lazyCourseCatalogues({
-  //     ...(selectedTitle && { university: selectedTitle }),
-  //     ...(selectedSubLocation && { subLocations: [selectedSubLocation] }),
-  //     page: 1,
-  //     size: 10,
-  //     feeRange: [minPrice, maxPrice],
-  //   }).unwrap();
-  // };
   const handleSearchCourses = async (queryParams) => {
-    // console.log({ queryParams });
-
     setShowModal(false);
 
     await lazyCourseCatalogues({ ...queryParams }).unwrap();
@@ -137,7 +100,14 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -145,11 +115,22 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+        }}
+      >
         <Text>An error occurred: {error.message}</Text>
       </View>
     );
   }
+
+  const handleRefresh = () => {
+    setRefreshing(true) ? isFetching() : setRefreshing(false);
+  };
 
   return (
     <View style={[styles.screen]}>
@@ -173,7 +154,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             style={{ fontSize: 17 }}
             placeholder="Search.."
             value={search}
-            ref={searchRef}
+            // ref={searchRef}
             onChangeText={(tet) => {
               setSearch(tet);
             }}
@@ -186,32 +167,49 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        {!isLoading ? (
+        {!isLoading && !isFetching ? (
           data?.data?.length ? (
             <View>
+              <Text
+                style={{
+                  paddingHorizontal: 20,
+                  paddingTop: 15,
+                  fontSize: 18,
+                  fontWeight: "bold",
+                }}
+              >
+                {data.totalItems} results found!
+              </Text>
               {filteredCourse.length > 0 ? (
                 <FlatList
                   scrollIndicatorInsets={false}
                   nestedScrollEnabled={true}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={handleRefresh}
+                    />
+                  }
                   data={filteredCourse}
-                  keyExtractor={(item) => item._id.toString()}
-                  ListFooterComponent={<View style={{ height: 150 }} />}
+                  keyExtractor={(item) => item?._id.toString()}
                   renderItem={({ item }) => {
                     return (
                       <View>
+                        <Text style={{ color: "black" }}>
+                          {item?.totalItems}
+                        </Text>
                         <TouchableOpacity
-                          // style={styles.countryItem2}
                           onPress={() =>
                             navigation.navigate("Detail", {
                               item,
                             })
                           }
                         >
-                          {/* <Text>{JSON.stringify(filteredCourse, null, 30)}</Text> */}
+                          {/* <Text>{JSON.stringify(data, null, 30)}</Text> */}
                           <View style={styles.cataloguesListsContainer}>
                             <View style={styles.oneline}>
                               <Image
-                                source={{ uri: item.university.logo }}
+                                source={{ uri: item?.university?.logo }}
                                 style={{ height: 110, width: 110, zIndex: 1 }}
                               />
                               <View style={{ width: 20 }} />
@@ -226,38 +224,41 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                                 <Text
                                   style={{ fontSize: 23, fontWeight: "500" }}
                                 >
-                                  {item.title}
+                                  {item?.title}
                                 </Text>
                                 <Text style={{ color: "blue", fontSize: 18 }}>
-                                  {item.university.title}
+                                  {item?.university?.title}
                                 </Text>
                                 <View style={styles.oneline}>
                                   <Text style={{ fontSize: 16 }}>
-                                    {item.location?.name}{" "}
+                                    {item?.location?.name}{" "}
                                   </Text>
                                   <Text style={{ fontSize: 16 }}>
-                                    {item.subLocations.name}
+                                    {"   "}
+                                    {item?.subLocations[0]?.name}
                                   </Text>
                                 </View>
                                 <View style={styles.oneline}>
                                   <Text style={{ fontSize: 16 }}>
-                                    {item.years}{" "}
+                                    {item?.duration?.name}
+                                    {"   "}
                                   </Text>
                                   <Text style={{ fontSize: 16 }}>
-                                    {item.level.name} Level
+                                    {item?.level?.name} Level
                                   </Text>
                                 </View>
                                 <View style={styles.oneline}>
                                   <Text
                                     style={{ fontSize: 18, color: "green" }}
                                   >
-                                    $ {item.tutionFee}{" "}
+                                    $ {item?.tuitionFee}{" "}
                                   </Text>
                                   <Text style={{ fontSize: 16 }}>
-                                    ({item.currency.code}){" "}
+                                    ({item?.currency?.code}){" "}
                                   </Text>
                                   <Text style={{ fontSize: 16 }}>
-                                    {item.feeType}
+                                    {"/"}
+                                    {item?.feeType}
                                   </Text>
                                 </View>
                               </View>
@@ -280,13 +281,27 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             </View>
           ) : (
             <View style={{ height: SCREEN_HEIGHT }}>
-              <Text style={{ alignSelf: "center", marginTop: 100 }}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  marginTop: "90%",
+                }}
+              >
                 No Courses Found!
               </Text>
             </View>
           )
         ) : (
-          <Text>Loading...</Text>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+              marginTop: "80%",
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
         )}
       </View>
     </View>
@@ -324,39 +339,42 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
     setFilters(initialFilterState);
   };
 
-  const { data, isLoading, error } = useGetAllCourseCataloguesDataQuery();
+  const { data } = useGetAllCourseCataloguesDataQuery();
   const filteredData = Array.from(
     new Set(data?.data?.map((item) => item?.level?.name))
   ).map((name) => data?.data?.find((item) => item?.level?.name === name));
   const data1 = [
     {
+      id: "1",
       feeType: "Semester",
     },
     {
+      id: "2",
       feeType: "Term",
     },
     {
+      id: "3",
       feeType: "Year",
     },
     {
+      id: "4",
       feeType: "Course",
     },
   ];
 
   // RTK Query
-  const { data: locations, isLoading: loadingLocations } =
-    useGetGlobalListDataQuery({
-      type: "Locations",
-      includeChildren: true,
-      status: "Active",
-    });
+  const { data: locations } = useGetGlobalListDataQuery({
+    type: "Locations",
+    includeChildren: true,
+    status: "Active",
+  });
 
-  const [lazyFetchSubLocactions, { data: subLocations, isFetching }] =
+  const [lazyFetchSubLocactions, { data: subLocations }] =
     useLazyGetGlobalListDataQuery();
 
-  const [lazyFetchTitles, { data: titles, isFetching1 }] =
+  const [lazyFetchTitles, { data: titles }] =
     useLazyGetUniversityListDataQuery();
-  console.log(titles);
+  // console.log(titles);
 
   React.useEffect(() => {
     if (!selectedLocation) return;
@@ -411,7 +429,7 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
             >
               <Picker.Item label="Select Location" value={null} />
               {locations?.map((item) => (
-                <Picker.Item label={item.name} value={item} key={item.name} />
+                <Picker.Item label={item?.name} value={item} key={item?.name} />
               ))}
             </Picker>
           </View>
@@ -587,7 +605,7 @@ const styles = StyleSheet.create({
     // width: "95%",
     marginLeft: 20,
     marginRight: 20,
-    marginTop: 10,
+    // marginTop: 10,
     borderWidth: 0.5,
     borderRadius: 8,
     paddingLeft: 15,
