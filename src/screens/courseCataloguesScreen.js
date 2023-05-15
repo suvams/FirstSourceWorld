@@ -214,40 +214,44 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        <View>
-          {(!!selectedValue1 ||
-            !!selectedValue2 ||
-            !!selectedValue3 ||
-            !!selectedValue5 ||
-            !!selectedValue4 ||
-            !!selectedValue6 ||
-            !!selectedValue7) && (
-            <Text style={styles.text}>You Filter The Folllowing: </Text>
-          )}
-          <View style={styles.oneline}>
-            {!!selectedValue1 && (
-              <Text style={styles.text}>Location:{selectedValue1}</Text>
+        <View style={{ marginLeft: 15, marginTop: 10 }}>
+          <View>
+            {(!!selectedValue1 ||
+              !!selectedValue2 ||
+              !!selectedValue3 ||
+              !!selectedValue5 ||
+              !!selectedValue4 ||
+              !!selectedValue6 ||
+              !!selectedValue7) && (
+              <Text style={styles.text}>You Filter The Folllowing: </Text>
             )}
-            {!!selectedValue2 && (
-              <Text style={styles.text}>Sub Location:{selectedValue2}</Text>
-            )}
+            <View style={styles.oneline}>
+              {!!selectedValue1 && (
+                <Text style={styles.text}>Location: {selectedValue1}</Text>
+              )}
+              {!!selectedValue2 && (
+                <Text style={styles.text}>Sub Location: {selectedValue2}</Text>
+              )}
+            </View>
             {!!selectedValue3 && (
-              <Text style={styles.text}>Title:{selectedValue3}</Text>
+              <Text style={styles.text}>Title: {selectedValue3}</Text>
             )}
-          </View>
-          <View style={styles.oneline}>
-            {!!selectedValue5 && (
-              <Text style={styles.text}>Payment type:{selectedValue5}</Text>
-            )}
-            {!!selectedValue4 && (
-              <Text style={styles.text}>Level:{selectedValue4}</Text>
-            )}
-            {!!selectedValue6 && (
-              <Text style={styles.text}>Minimum cost:{selectedValue6}</Text>
-            )}
-            {!!selectedValue7 && (
-              <Text style={styles.text}>Maximum cost:{selectedValue7}</Text>
-            )}
+            <View style={styles.oneline}>
+              {!!selectedValue5 && (
+                <Text style={styles.text}>Payment type: {selectedValue5}</Text>
+              )}
+              {!!selectedValue4 && (
+                <Text style={styles.text}>Level: {selectedValue4}</Text>
+              )}
+            </View>
+            <View style={styles.oneline}>
+              {!!selectedValue6 && (
+                <Text style={styles.text}>Minimum cost: {selectedValue6}</Text>
+              )}
+              {!!selectedValue7 && (
+                <Text style={styles.text}>Maximum cost: {selectedValue7}</Text>
+              )}
+            </View>
           </View>
         </View>
 
@@ -432,7 +436,7 @@ const FliterModal = ({
     onSelectValue7(maxPrice);
   };
   const [minPrice, setMinPrice] = useState(selectedValue6 ?? 0);
-  const [maxPrice, setMaxPrice] = useState(selectedValue7 ?? 100000);
+  const [maxPrice, setMaxPrice] = useState(selectedValue7 ?? 100000000);
   const [selectedLocation, setSelectedLocation] = useState(selectedValue1);
   const [selectedSubLocation, setSelectedSubLocation] = useState(
     selectedValue2
