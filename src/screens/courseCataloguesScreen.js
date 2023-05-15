@@ -7,12 +7,12 @@ import {
   FlatList,
   Text,
   Modal,
-  Button,
   StatusBar,
   Image,
   Dimensions,
   ActivityIndicator,
   ScrollView,
+  Animated,
   RefreshControl,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
@@ -42,6 +42,13 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [selectedSubLocation, setSelectedSubLocation] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedValue1, setSelectedValue1] = useState(null);
+  const [selectedValue2, setSelectedValue2] = useState(null);
+  const [selectedValue3, setSelectedValue3] = useState(null);
+  const [selectedValue4, setSelectedValue4] = useState(null);
+  const [selectedValue5, setSelectedValue5] = useState(null);
+  const [selectedValue6, setSelectedValue6] = useState(null);
+  const [selectedValue7, setSelectedValue7] = useState(null);
 
   // RTK Query
 
@@ -83,8 +90,9 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
     };
 
     const handleFetchSubLocations = async (location) => {
+      const locations = { name: location.name, _id: location._id };
       await lazyFetchSubLocactions({
-        type: location,
+        type: locations,
         includeChildren: true,
         status: "Active",
       }).unwrap();
@@ -132,6 +140,31 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
     setRefreshing(true) ? isFetching() : setRefreshing(false);
   };
 
+  const handleSelectValue1 = (value) => {
+    setSelectedValue1(value);
+  };
+
+  const handleSelectValue3 = (value) => {
+    setSelectedValue3(value);
+  };
+  const handleSelectValue4 = (value) => {
+    setSelectedValue4(value);
+  };
+
+  const handleSelectValue5 = (value) => {
+    setSelectedValue5(value);
+  };
+  const handleSelectValue6 = (value) => {
+    setSelectedValue6(value);
+  };
+
+  const handleSelectValue2 = (value) => {
+    setSelectedValue2(value);
+  };
+  const handleSelectValue7 = (value) => {
+    setSelectedValue7(value);
+  };
+
   return (
     <View style={[styles.screen]}>
       <View
@@ -148,6 +181,20 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
           showModal={showModal}
           setShowModal={setShowModal}
           onSearch={handleSearchCourses}
+          selectedValue1={selectedValue1}
+          selectedValue2={selectedValue2}
+          selectedValue3={selectedValue3}
+          selectedValue4={selectedValue4}
+          selectedValue5={selectedValue5}
+          selectedValue6={selectedValue6}
+          selectedValue7={selectedValue7}
+          onSelectValue1={handleSelectValue1}
+          onSelectValue2={handleSelectValue2}
+          onSelectValue3={handleSelectValue3}
+          onSelectValue4={handleSelectValue4}
+          onSelectValue5={handleSelectValue5}
+          onSelectValue6={handleSelectValue6}
+          onSelectValue7={handleSelectValue7}
         />
         <View style={[styles.searchInput, styles.oneline]}>
           <TextInput
@@ -167,6 +214,43 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
+        <View>
+          {(!!selectedValue1 ||
+            !!selectedValue2 ||
+            !!selectedValue3 ||
+            !!selectedValue5 ||
+            !!selectedValue4 ||
+            !!selectedValue6 ||
+            !!selectedValue7) && (
+            <Text style={styles.text}>You Filter The Folllowing: </Text>
+          )}
+          <View style={styles.oneline}>
+            {!!selectedValue1 && (
+              <Text style={styles.text}>Location:{selectedValue1}</Text>
+            )}
+            {!!selectedValue2 && (
+              <Text style={styles.text}>Sub Location:{selectedValue2}</Text>
+            )}
+            {!!selectedValue3 && (
+              <Text style={styles.text}>Title:{selectedValue3}</Text>
+            )}
+          </View>
+          <View style={styles.oneline}>
+            {!!selectedValue5 && (
+              <Text style={styles.text}>Payment type:{selectedValue5}</Text>
+            )}
+            {!!selectedValue4 && (
+              <Text style={styles.text}>Level:{selectedValue4}</Text>
+            )}
+            {!!selectedValue6 && (
+              <Text style={styles.text}>Minimum cost:{selectedValue6}</Text>
+            )}
+            {!!selectedValue7 && (
+              <Text style={styles.text}>Maximum cost:{selectedValue7}</Text>
+            )}
+          </View>
+        </View>
+
         {!isLoading && !isFetching ? (
           data?.data?.length ? (
             <View>
@@ -309,7 +393,25 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
 });
 export default CourseCataloguesScreen;
 
-const FliterModal = ({ showModal, setShowModal, onSearch }) => {
+const FliterModal = ({
+  showModal,
+  setShowModal,
+  onSearch,
+  selectedValue1,
+  selectedValue2,
+  selectedValue3,
+  selectedValue4,
+  selectedValue5,
+  selectedValue6,
+  selectedValue7,
+  onSelectValue1,
+  onSelectValue2,
+  onSelectValue3,
+  onSelectValue4,
+  onSelectValue5,
+  onSelectValue6,
+  onSelectValue7,
+}) => {
   const initialFilterState = {
     minPrice: 0,
     maxPrice: 100000,
@@ -319,13 +421,28 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
     setSelectedFeeType: null,
     setSelectedCourseLevels: null,
   };
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(100000);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedSubLocation, setSelectedSubLocation] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState(null);
-  const [selectedFeeType, setSelectedFeeType] = useState(null);
-  const [selectedCourseLevels, setSelectedCourseLevels] = useState(null);
+
+  const handleSelectValue = () => {
+    onSelectValue1(selectedLocation?.name);
+    onSelectValue2(selectedSubLocation?.name);
+    onSelectValue3(selectedTitle?.title);
+    onSelectValue4(selectedCourseLevels?.name);
+    onSelectValue5(selectedFeeType);
+    onSelectValue6(minPrice ?? 0);
+    onSelectValue7(maxPrice);
+  };
+  const [minPrice, setMinPrice] = useState(selectedValue6 ?? 0);
+  const [maxPrice, setMaxPrice] = useState(selectedValue7 ?? 100000);
+  const [selectedLocation, setSelectedLocation] = useState(selectedValue1);
+  const [selectedSubLocation, setSelectedSubLocation] = useState(
+    selectedValue2
+      ? { name: selectedValue2.name, _id: selectedValue2._id }
+      : null
+  );
+  const [selectedTitle, setSelectedTitle] = useState(selectedValue3);
+  const [selectedFeeType, setSelectedFeeType] = useState(selectedValue5);
+  const [selectedCourseLevels, setSelectedCourseLevels] =
+    useState(selectedValue4);
   const [filters, setFilters] = useState(initialFilterState);
 
   const handleResetFilters = () => {
@@ -375,6 +492,7 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
   const [lazyFetchTitles, { data: titles }] =
     useLazyGetUniversityListDataQuery();
   // console.log(titles);
+  const [slideAnim] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
     if (!selectedLocation) return;
@@ -399,10 +517,10 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
   const handleSearchCourses = () => {
     const query = {
       ...(selectedLocation && { location: selectedLocation?._id }),
-      ...(selectedTitle && { university: selectedTitle }),
-      ...(selectedSubLocation && { subLocations: [selectedSubLocation] }),
+      ...(selectedTitle && { university: selectedTitle?._id }),
+      ...(selectedSubLocation && { subLocations: [selectedSubLocation?._id] }),
       ...(selectedFeeType && { feeType: selectedFeeType }),
-      ...(selectedCourseLevels && { courseLevels: selectedCourseLevels }),
+      ...(selectedCourseLevels && { courseLevels: selectedCourseLevels?.id }),
       page: 1,
       size: 10,
       feeRange: [minPrice, maxPrice],
@@ -448,7 +566,7 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
                   {subLocations?.map((item) => (
                     <Picker.Item
                       label={item?.name}
-                      value={item?._id}
+                      value={item}
                       key={item?._id}
                     />
                   ))}
@@ -468,7 +586,7 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
                   {titles?.map((item) => (
                     <Picker.Item
                       label={item?.title}
-                      value={item?._id}
+                      value={item}
                       key={item?._id}
                     />
                   ))}
@@ -528,7 +646,7 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
                 {filteredData?.map((item) => (
                   <Picker.Item
                     label={item?.level?.name}
-                    value={item?.level?._id}
+                    value={item?.level}
                     key={item?.level?._id}
                   />
                 ))}
@@ -537,19 +655,62 @@ const FliterModal = ({ showModal, setShowModal, onSearch }) => {
           </View>
           <View style={[styles.oneline, { padding: 20 }]}>
             <View style={{ flex: 1 }} />
-            <Button
-              title="Search"
-              color="black"
-              onPress={handleSearchCourses}
-            />
+            <TouchableOpacity
+              onPress={() => {
+                handleSearchCourses();
+                handleSelectValue();
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "purple",
+                  padding: 5,
+                  borderRadius: 5,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+                >
+                  Search
+                </Text>
+              </View>
+            </TouchableOpacity>
             <View style={{ flex: 1 }} />
-            <Button
-              title="Cancel"
-              color="black"
-              onPress={() => setShowModal(false)}
-            />
+
+            <TouchableOpacity onPress={() => setShowModal(false)}>
+              <View
+                style={{
+                  backgroundColor: "purple",
+                  padding: 5,
+                  borderRadius: 5,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+                >
+                  Cancel
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {/* <Button title="Search" color="black" /> */}
+            {/* <Button title="Cancel" color="black" /> */}
             <View style={{ flex: 1 }} />
-            <Button title="Reset" color="black" onPress={handleResetFilters} />
+            <TouchableOpacity onPress={handleResetFilters}>
+              <View
+                style={{
+                  backgroundColor: "purple",
+                  padding: 5,
+                  borderRadius: 5,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+                >
+                  Reset
+                </Text>
+              </View>
+            </TouchableOpacity>
+            {/* <Button title="Reset" color="black" /> */}
             <View style={{ flex: 1 }} />
           </View>
         </View>
@@ -675,5 +836,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#ccc",
     marginHorizontal: 10,
+  },
+  text: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 10,
   },
 });
