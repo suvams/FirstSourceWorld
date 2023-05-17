@@ -29,18 +29,49 @@ const CourseCatalogueDetailScreen = ({ route }) => {
 
   const [account, setAccount] = useState("");
   const [entity, setEntity] = useState("");
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-  const [email, setEmail] = useState("a@gamil.com");
-  const [phone, setPhone] = useState("98451545");
-  const [message, setMessage] = useState("Message");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [countryCode, setCountryCode] = useState("+977");
+  const handlePhoneChange = (value) => {
+    setPhone(value);
+    setPhoneError("");
+  };
 
-  // console.log(route.params.item._id);
+  const validatePhone = () => {
+    let phoneRegex;
+
+    switch (countryCode) {
+      case "+977":
+        phoneRegex = /^(\+977)?[7-9][0-9]{9}$/;
+        break;
+      case "+1":
+        phoneRegex = /^(\+1)?[2-9]\d{2}[2-9](?!11)\d{6}$/;
+        break;
+      case "+44":
+        phoneRegex = /^(\+44)?[1-9]\d{8,9}$/;
+        break;
+      case "+61":
+        phoneRegex = /^(\+61)?[2-9]\d{8}$/;
+        break;
+      default:
+        return;
+    }
+
+    if (phone && !phoneRegex.test(phone)) {
+      setPhoneError("Please enter a valid phone number");
+    }
+  };
+
   const { data, isLoading, error } = useGetCourseCatalogueDetailDataByIdQuery(
     route.params.item._id
   );
   const _id = route.params.item - _id;
-  // console.log(data);
   const { data: accounts, isLoading1, error1 } = useGetAccountListDataQuery();
 
   const [lazyFetchAccountEntity, { data: accountEntity, isFetching }] =
@@ -61,7 +92,6 @@ const CourseCatalogueDetailScreen = ({ route }) => {
     try {
       const result = await Share.share({
         message: `Check out this cool link: https://www.firstsourceworld.com/v2/courses-catalogue/${data?._id}`,
-        // url: `https://www.firstsourceworld.com/v2/courses-catalogue/${data._id}`,
         title: "FirstSource World Course Catalogue",
       });
       if (result.action === Share.sharedAction) {
@@ -80,23 +110,48 @@ const CourseCatalogueDetailScreen = ({ route }) => {
       !lastName.trim() ||
       !email.trim() ||
       !phone.trim() ||
-      !account?._id.trim() ||
-      !entity.trim() ||
-      !message.trim()
+      !account?._id?.trim() ||
+      !entity?.trim()
     ) {
       alert("Please fill all the fields.");
       return;
     }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    const phoneRegexMap = {
+      "+977": /^(\+977)?[7-9][0-9]{9}$/,
+      "+1": /^(\+1)?[2-9]\d{2}[2-9](?!11)\d{6}$/,
+      "+44": /^(\+44)?[1-9]\d{8,9}$/,
+      "+61": /^(\+61)?[2-9]\d{8}$/,
+    };
+    const selectedPhoneRegex = phoneRegexMap[countryCode];
+
+    if (!selectedPhoneRegex.test(phone)) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
+    const phoneNumber = countryCode + phone;
+    const defaultMsg =
+      "I am interested in applying for " +
+      (data?.title || "") +
+      ", located at " +
+      (data?.location?.name || "");
     try {
       const user = {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        phone: phone,
-        message: message,
+        phone: phoneNumber,
+        message: message || defaultMsg,
         account: account._id,
         entity: entity,
       };
+      console.log(user);
       await postApplyForTheCourse(user).unwrap();
       setFirstName("");
       setLastName("");
@@ -106,17 +161,12 @@ const CourseCatalogueDetailScreen = ({ route }) => {
       setAccount("");
       setEntity("");
 
-      alert("User created successfully!");
+      alert("Successfully applied for the course!");
     } catch (error) {
-      console.error("Error creating user:", error);
-      alert("Error creating user. Please try again later.");
+      console.error("Error applying for the course:", error);
+      alert("Error applying for the course. Please try again later.");
     }
   };
-  // console.log("data", data);
-
-  // if (!data) {
-  //   return <Text>Loading</Text>;
-  // }
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -312,13 +362,42 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               value={email}
               style={styles.textInput}
               onChangeText={setEmail}
+              onBlur={() => {
+                if (email && !emailRegex.test(email)) {
+                  setEmailError("Please enter a valid email address");
+                } else {
+                  setEmailError("");
+                }
+              }}
             />
-            <TextInput
-              placeholder="Phone"
-              value={phone}
-              style={styles.textInput}
-              onChangeText={setPhone}
-            />
+            {emailError ? (
+              <Text style={styles.errorText}>{emailError}</Text>
+            ) : null}
+            <View style={styles.phoneContainer}>
+              <Picker
+                selectedValue={countryCode}
+                style={styles.countryCodePicker}
+                mode="dropdown"
+                onValueChange={(itemValue) => setCountryCode(itemValue)}
+              >
+                <Picker.Item label="+977 Nepal" value="+977" />
+                <Picker.Item label="+1 Canada and USA" value="+1" />
+                <Picker.Item label="+44 UK" value="+44" />
+                <Picker.Item label="+61 Australia" value="+61" />
+              </Picker>
+              <TextInput
+                placeholder="Phone"
+                value={phone}
+                style={styles.textInput4}
+                onChangeText={handlePhoneChange}
+                keyboardType="phone-pad"
+                onBlur={validatePhone}
+              />
+            </View>
+            {phoneError ? (
+              <Text style={styles.errorText}>{phoneError}</Text>
+            ) : null}
+
             <View style={styles.btncontainer}>
               <Picker
                 selectedValue={account}
@@ -326,6 +405,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                   setAccount(itemValue);
                   setEntity(null);
                 }}
+                mode="dropdown"
               >
                 <Picker.Item label="Select Agency" value={null} />
                 {accounts?.map((item) => (
@@ -340,6 +420,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                   onValueChange={(itemValue) => {
                     setEntity(itemValue);
                   }}
+                  mode="dropdown"
                 >
                   <Picker.Item label="Select Entity" value={null} />
                   {accountEntity?.map((item) => (
@@ -438,5 +519,27 @@ const styles = StyleSheet.create({
     fontSize: 17,
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  phoneContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  countryCodePicker: {
+    width: 125,
+  },
+  textInput4: {
+    flex: 1,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "#8e8e8e",
+    alignSelf: "center",
+    marginTop: 10,
+    padding: 10,
+    fontSize: 17,
+  },
+  errorText: {
+    color: "red",
+    marginTop: 5,
   },
 });

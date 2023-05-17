@@ -216,40 +216,59 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
         </View>
         <View style={{ marginLeft: 15, marginTop: 10 }}>
           <View>
-            {(!!selectedValue1 ||
-              !!selectedValue2 ||
-              !!selectedValue3 ||
-              !!selectedValue5 ||
-              !!selectedValue4 ||
-              !!selectedValue6 ||
-              !!selectedValue7) && (
-              <Text style={styles.text}>You Filter The Folllowing: </Text>
-            )}
+            {!!selectedValue1 ||
+            !!selectedValue2 ||
+            !!selectedValue3 ||
+            !!selectedValue5 ||
+            !!selectedValue4 ||
+            !!selectedValue6 ||
+            !!selectedValue7 ? (
+              <Text style={styles.text1}>You Filter The Folllowing: </Text>
+            ) : null}
             <View style={styles.oneline}>
               {!!selectedValue1 && (
-                <Text style={styles.text}>Location: {selectedValue1}</Text>
+                <View style={styles.oneline}>
+                  <Text style={styles.text}>Location:</Text>
+                  <Text style={styles.text1}>{selectedValue1}</Text>
+                </View>
               )}
+              <View style={{ flex: 1 }} />
               {!!selectedValue2 && (
-                <Text style={styles.text}>Sub Location: {selectedValue2}</Text>
+                <View style={styles.oneline}>
+                  <Text style={styles.text}>Sub Location:</Text>
+                  <Text style={styles.text1}>{selectedValue2}</Text>
+                </View>
               )}
             </View>
             {!!selectedValue3 && (
-              <Text style={styles.text}>Title: {selectedValue3}</Text>
+              <View style={styles.oneline}>
+                <Text style={styles.text}>Course Title:</Text>
+                <Text style={styles.text1}>{selectedValue3}</Text>
+              </View>
             )}
             <View style={styles.oneline}>
               {!!selectedValue5 && (
-                <Text style={styles.text}>Payment type: {selectedValue5}</Text>
+                <View style={styles.oneline}>
+                  <Text style={styles.text}>Fee Type:</Text>
+                  <Text style={styles.text1}>{selectedValue5}</Text>
+                </View>
               )}
+              <View style={{ flex: 1 }} />
               {!!selectedValue4 && (
-                <Text style={styles.text}>Level: {selectedValue4}</Text>
+                <View style={styles.oneline}>
+                  <Text style={styles.text}>Course Level:</Text>
+                  <Text style={styles.text1}>{selectedValue4}</Text>
+                </View>
               )}
             </View>
             <View style={styles.oneline}>
-              {!!selectedValue6 && (
-                <Text style={styles.text}>Minimum cost: {selectedValue6}</Text>
-              )}
-              {!!selectedValue7 && (
-                <Text style={styles.text}>Maximum cost: {selectedValue7}</Text>
+              {!!selectedValue6 && !!selectedValue7 && (
+                <View style={styles.oneline}>
+                  <Text style={styles.text}>Fee Cost Range:</Text>
+                  <Text style={styles.text1}>
+                    {selectedValue6}-{selectedValue7}
+                  </Text>
+                </View>
               )}
             </View>
           </View>
@@ -417,8 +436,8 @@ const FliterModal = ({
   onSelectValue7,
 }) => {
   const initialFilterState = {
-    minPrice: 0,
-    maxPrice: 100000,
+    minPrice: null,
+    maxPrice: null,
     setSelectedLocation: null,
     setSelectedSubLocation: null,
     setSelectedTitle: null,
@@ -432,11 +451,11 @@ const FliterModal = ({
     onSelectValue3(selectedTitle?.title);
     onSelectValue4(selectedCourseLevels?.name);
     onSelectValue5(selectedFeeType);
-    onSelectValue6(minPrice ?? 0);
+    onSelectValue6(minPrice);
     onSelectValue7(maxPrice);
   };
-  const [minPrice, setMinPrice] = useState(selectedValue6 ?? 0);
-  const [maxPrice, setMaxPrice] = useState(selectedValue7 ?? 100000000);
+  const [minPrice, setMinPrice] = useState(selectedValue6);
+  const [maxPrice, setMaxPrice] = useState(selectedValue7);
   const [selectedLocation, setSelectedLocation] = useState(selectedValue1);
   const [selectedSubLocation, setSelectedSubLocation] = useState(
     selectedValue2
@@ -519,6 +538,9 @@ const FliterModal = ({
 
   // methods
   const handleSearchCourses = () => {
+    const parsedMinPrice = parseFloat(minPrice);
+    const parsedMaxPrice = parseFloat(maxPrice);
+
     const query = {
       ...(selectedLocation && { location: selectedLocation?._id }),
       ...(selectedTitle && { university: selectedTitle?._id }),
@@ -527,12 +549,14 @@ const FliterModal = ({
       ...(selectedCourseLevels && { courseLevels: selectedCourseLevels?.id }),
       page: 1,
       size: 10,
-      feeRange: [minPrice, maxPrice],
+      feeRange: [
+        isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
+        isNaN(parsedMaxPrice) ? 100000000 : parsedMaxPrice,
+      ],
     };
 
     onSearch(query);
   };
-  // console.log(handleSearchCourses);
 
   return (
     <Modal visible={showModal} transparent={true} animationType={"slide"}>
@@ -548,6 +572,7 @@ const FliterModal = ({
                 setSelectedSubLocation(null);
                 setSelectedTitle(null);
               }}
+              mode="dropdown"
             >
               <Picker.Item label="Select Location" value={null} />
               {locations?.map((item) => (
@@ -565,6 +590,7 @@ const FliterModal = ({
                     setSelectedSubLocation(itemValue);
                     // setSelectedTitle(null);
                   }}
+                  mode="dropdown"
                 >
                   <Picker.Item label="Select SubLocation" value={null} />
                   {subLocations?.map((item) => (
@@ -585,6 +611,7 @@ const FliterModal = ({
                 <Picker
                   selectedValue={selectedTitle}
                   onValueChange={(itemValue) => setSelectedTitle(itemValue)}
+                  mode="dropdown"
                 >
                   <Picker.Item label="Select Title" value={null} />
                   {titles?.map((item) => (
@@ -624,6 +651,7 @@ const FliterModal = ({
               <Picker
                 selectedValue={selectedFeeType}
                 onValueChange={(itemValue) => setSelectedFeeType(itemValue)}
+                mode="dropdown"
               >
                 <Picker.Item label="Select Payment Per" value={null} />
                 {data1.map((item) => (
@@ -645,6 +673,7 @@ const FliterModal = ({
                 onValueChange={(itemValue) =>
                   setSelectedCourseLevels(itemValue)
                 }
+                mode="dropdown"
               >
                 <Picker.Item label="Select Course Levels" value={null} />
                 {filteredData?.map((item) => (
@@ -836,15 +865,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
   },
-  text: {
-    fontSize: 30,
-    color: "#ccc",
-    marginHorizontal: 10,
+  text1: {
+    color: "blue",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 50,
   },
   text: {
     color: "black",
     fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 10,
+    // fontWeight: "bold",
+    marginRight: 5,
   },
 });

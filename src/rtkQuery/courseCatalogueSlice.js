@@ -6,7 +6,7 @@ export const GetCourseCataloguesApiCall = createApi({
   endpoints: (builder) => ({
     getCourseCataloguesData: builder.query({
       query: (params) => ({
-        url: "/public/course-catalogues?page=1&size=100000000000000",
+        url: "/public/course-catalogues?page=1&size=1000000",
         method: "get",
         params,
       }),
@@ -25,7 +25,7 @@ export const GetCourseCataloguesApiCall = createApi({
     }),
     getAllCourseCataloguesData: builder.query({
       query: () => ({
-        url: "/public/course-catalogues?page=1&size=100000000",
+        url: "/public/course-catalogues?page=1&size=1000000",
       }),
     }),
     // addNewPost: builder.mutation({

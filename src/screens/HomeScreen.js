@@ -120,13 +120,13 @@ const HomeScreen = ({ navigation }) => {
   const renderItem = ({ item, index }) => {
     let imageText = "";
     if (index === 0) {
-      imageText = "USA";
-    } else if (index === 1) {
-      imageText = "UK";
-    } else if (index === 2) {
       imageText = "Australia";
-    } else if (index === 3) {
+    } else if (index === 1) {
       imageText = "Canada";
+    } else if (index === 2) {
+      imageText = "UK";
+    } else if (index === 3) {
+      imageText = "USA";
     }
 
     return (
