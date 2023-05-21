@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const GetCourseCatalogueDetailApiCall = createApi({
   reducerPath: "getCourseCatalogueDetailApiCall",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://firstsourceworld.com/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://eduxgateway.com/api" }),
   endpoints: (builder) => ({
     getCourseCatalogueDetailDataById: builder.query({
       query: (_id) => ({

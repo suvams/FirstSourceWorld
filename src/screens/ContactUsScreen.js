@@ -121,7 +121,7 @@ const ContactUsScreen = ({ onSubmit }) => {
         <TouchableOpacity
           style={[styles.applyButton, isSubmitting && styles.disabledButton]}
           disabled={isSubmitting}
-          onPress={handleApply}
+          // onPress={handleApply}
         >
           <Text style={styles.applyButtonText}>
             {isSubmitting ? "Applying..." : "Apply"}

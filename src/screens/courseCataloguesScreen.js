@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -16,12 +16,9 @@ import {
   RefreshControl,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
 import {
-  useGetCourseCataloguesDataQuery,
-  useGetCourseCataloguesFeeRangeDataQuery,
   useLazyGetCourseCataloguesDataQuery,
-  useLazyGetCourseCataloguesFeeRangeDataQuery,
-  useLazyGetSearchAllFilterDataQuery,
   useGetAllCourseCataloguesDataQuery,
 } from "../rtkQuery/courseCatalogueSlice";
 import {
@@ -32,6 +29,30 @@ import { useLazyGetUniversityListDataQuery } from "../rtkQuery/universityListSli
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
+const Skeleton = () => (
+  // Placeholder skeleton component
+  <View style={{ padding: 20 }}>
+    <View
+      style={{
+        height: 30,
+        width: 150,
+        backgroundColor: "#E0E0E0",
+        marginBottom: 5,
+        borderRadius: 8,
+        paddingTop: 15,
+        paddingBottom: 15,
+      }}
+    />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+  </View>
+);
 const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [search, setSearch] = useState("");
   // const searchRef = useRef();
@@ -49,13 +70,12 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [selectedValue5, setSelectedValue5] = useState(null);
   const [selectedValue6, setSelectedValue6] = useState(null);
   const [selectedValue7, setSelectedValue7] = useState(null);
+  const [filteredCourse1, setFilteredCourse1] = useState([]);
 
   // RTK Query
 
-  const [
-    lazyCourseCatalogues,
-    { data, isLoading, isFetching, error, refetch },
-  ] = useLazyGetCourseCataloguesDataQuery();
+  const [lazyCourseCatalogues, { data, isLoading, isFetching, error }] =
+    useLazyGetCourseCataloguesDataQuery();
 
   const { data: locations, isLoading: loadingLocations } =
     useGetGlobalListDataQuery({
@@ -107,18 +127,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   }, []);
 
   if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        }}
-      >
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <Skeleton />;
   }
 
   if (error) {
@@ -140,29 +149,130 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
     setRefreshing(true) ? isFetching() : setRefreshing(false);
   };
 
-  const handleSelectValue1 = (value) => {
-    setSelectedValue1(value);
+  const handleSelectValue1 = (value1) => {
+    setSelectedValue1(value1);
   };
 
-  const handleSelectValue3 = (value) => {
-    setSelectedValue3(value);
+  const handleSelectValue3 = (value3) => {
+    setSelectedValue3(value3);
   };
-  const handleSelectValue4 = (value) => {
-    setSelectedValue4(value);
-  };
-
-  const handleSelectValue5 = (value) => {
-    setSelectedValue5(value);
-  };
-  const handleSelectValue6 = (value) => {
-    setSelectedValue6(value);
+  const handleSelectValue4 = (value4) => {
+    setSelectedValue4(value4);
   };
 
-  const handleSelectValue2 = (value) => {
-    setSelectedValue2(value);
+  const handleSelectValue5 = (value5) => {
+    setSelectedValue5(value5);
   };
-  const handleSelectValue7 = (value) => {
-    setSelectedValue7(value);
+  const handleSelectValue6 = (value6) => {
+    setSelectedValue6(value6);
+  };
+
+  const handleSelectValue2 = (value2) => {
+    setSelectedValue2(value2);
+  };
+  const handleSelectValue7 = (value7) => {
+    setSelectedValue7(value7);
+  };
+  const handleRemoveValue = (
+    valueNumber,
+    selectedValue1,
+    selectedValue2,
+    selectedValue3,
+    selectedValue4,
+    selectedValue5,
+    selectedValue6,
+    selectedValue7
+  ) => {
+    // console.log(selectedValue1);
+    switch (valueNumber) {
+      case 1:
+        setSelectedValue1("");
+        const queryParams1 = {
+          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+          ...(selectedValue3 && { university: selectedValue3?.id }),
+          ...(selectedValue4 && { feeType: selectedValue4 }),
+          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+          page: 1,
+          size: 10,
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        };
+        console.log(queryParams1);
+        handleSearchCourses(queryParams1);
+        break;
+      case 2:
+        setSelectedValue2("");
+        const queryParams2 = {
+          ...(selectedValue1 && { location: selectedValue1?.id }),
+          ...(selectedValue3 && { university: selectedValue3?.id }),
+          ...(selectedValue4 && { feeType: selectedValue4 }),
+          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+          page: 1,
+          size: 10,
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        };
+        console.log(queryParams2);
+        handleSearchCourses(queryParams2);
+        break;
+      case 3:
+        setSelectedValue3("");
+        const queryParams3 = {
+          ...(selectedValue1 && { location: selectedValue1?.id }),
+          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+          ...(selectedValue4 && { feeType: selectedValue4 }),
+          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+          page: 1,
+          size: 10,
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        };
+        console.log(queryParams3);
+        handleSearchCourses(queryParams3);
+        break;
+      case 4:
+        setSelectedValue4("");
+        const queryParams4 = {
+          ...(selectedValue1 && { location: selectedValue1?.id }),
+          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+          ...(selectedValue3 && { university: selectedValue3?.id }),
+          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+          page: 1,
+          size: 10,
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        };
+        console.log(queryParams4);
+        handleSearchCourses(queryParams4);
+        break;
+      case 5:
+        setSelectedValue5("");
+        const queryParams5 = {
+          ...(selectedValue1 && { location: selectedValue1?.id }),
+          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+          ...(selectedValue3 && { university: selectedValue3?.id }),
+          ...(selectedValue4 && { feeType: selectedValue4 }),
+          page: 1,
+          size: 10,
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        };
+        console.log(queryParams5);
+        handleSearchCourses(queryParams5);
+        break;
+      case 6:
+        setSelectedValue6("");
+        setSelectedValue7("");
+        const queryParams6 = {
+          ...(selectedValue1 && { location: selectedValue1?.id }),
+          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+          ...(selectedValue3 && { university: selectedValue3?.id }),
+          ...(selectedValue4 && { feeType: selectedValue4 }),
+          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+          page: 1,
+          size: 10,
+        };
+        console.log(queryParams6);
+        handleSearchCourses(queryParams6);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -223,53 +333,181 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             !!selectedValue4 ||
             !!selectedValue6 ||
             !!selectedValue7 ? (
-              <Text style={styles.text1}>You Filter The Folllowing: </Text>
+              <Text style={styles.text2}>You Filter The Folllowing: </Text>
             ) : null}
-            <View style={styles.oneline}>
-              {!!selectedValue1 && (
-                <View style={styles.oneline}>
-                  <Text style={styles.text}>Location:</Text>
-                  <Text style={styles.text1}>{selectedValue1}</Text>
-                </View>
-              )}
-              <View style={{ flex: 1 }} />
-              {!!selectedValue2 && (
-                <View style={styles.oneline}>
-                  <Text style={styles.text}>Sub Location:</Text>
-                  <Text style={styles.text1}>{selectedValue2}</Text>
-                </View>
-              )}
-            </View>
-            {!!selectedValue3 && (
+            <View>
               <View style={styles.oneline}>
-                <Text style={styles.text}>Course Title:</Text>
-                <Text style={styles.text1}>{selectedValue3}</Text>
+                {!!selectedValue1 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        1,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Location:</Text>
+                      <Text style={styles.text1}>{selectedValue1?.name}</Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+                {!!selectedValue2 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        2,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Sub Location:</Text>
+                      <Text style={styles.text1}>{selectedValue2?.name}</Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
               </View>
-            )}
-            <View style={styles.oneline}>
-              {!!selectedValue5 && (
+              {!!selectedValue3 && (
                 <View style={styles.oneline}>
-                  <Text style={styles.text}>Fee Type:</Text>
-                  <Text style={styles.text1}>{selectedValue5}</Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        3,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Course Title:</Text>
+                      <Text style={styles.text1}>{selectedValue3?.name}</Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
                 </View>
               )}
-              <View style={{ flex: 1 }} />
-              {!!selectedValue4 && (
-                <View style={styles.oneline}>
-                  <Text style={styles.text}>Course Level:</Text>
-                  <Text style={styles.text1}>{selectedValue4}</Text>
-                </View>
-              )}
-            </View>
-            <View style={styles.oneline}>
-              {!!selectedValue6 && !!selectedValue7 && (
-                <View style={styles.oneline}>
-                  <Text style={styles.text}>Fee Cost Range:</Text>
-                  <Text style={styles.text1}>
-                    {selectedValue6}-{selectedValue7}
-                  </Text>
-                </View>
-              )}
+              <View style={styles.oneline}>
+                {!!selectedValue4 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        4,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Fee TYpe:</Text>
+                      <Text style={styles.text1}>{selectedValue4}</Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+                {!!selectedValue5 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        5,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Course Level:</Text>
+                      <Text style={styles.text1}>{selectedValue5?.name}</Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.oneline}>
+                {selectedValue6 && selectedValue7 && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleRemoveValue(
+                        6,
+                        selectedValue1,
+                        selectedValue2,
+                        selectedValue3,
+                        selectedValue4,
+                        selectedValue5,
+                        selectedValue6,
+                        selectedValue7
+                      )
+                    }
+                    style={styles.selectedValue}
+                  >
+                    <View style={styles.oneline}>
+                      <Text style={styles.text}>Fee Cost Range:</Text>
+                      <Text style={styles.text1}>
+                        {selectedValue6}-{selectedValue7}
+                      </Text>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={20}
+                        color="red"
+                      />
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
         </View>
@@ -399,16 +637,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             </View>
           )
         ) : (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              marginTop: "80%",
-            }}
-          >
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
+          <Skeleton />
         )}
       </View>
     </View>
@@ -446,13 +675,29 @@ const FliterModal = ({
   };
 
   const handleSelectValue = () => {
-    onSelectValue1(selectedLocation?.name);
-    onSelectValue2(selectedSubLocation?.name);
-    onSelectValue3(selectedTitle?.title);
-    onSelectValue4(selectedCourseLevels?.name);
-    onSelectValue5(selectedFeeType);
-    onSelectValue6(minPrice);
-    onSelectValue7(maxPrice);
+    const location = selectedLocation
+      ? { name: selectedLocation.name, id: selectedLocation._id }
+      : null;
+    const subLocation = selectedSubLocation
+      ? { name: selectedSubLocation.name, id: selectedSubLocation._id }
+      : null;
+    const title = selectedTitle
+      ? { name: selectedTitle.title, id: selectedTitle._id }
+      : null;
+    const feeType = selectedFeeType;
+    const courseLevels = selectedCourseLevels
+      ? { name: selectedCourseLevels.name, id: selectedCourseLevels._id }
+      : null;
+    const selectedMinPrice = minPrice;
+    const selectedMaxPrice = maxPrice;
+
+    onSelectValue1(location);
+    onSelectValue2(subLocation);
+    onSelectValue3(title);
+    onSelectValue4(feeType);
+    onSelectValue5(courseLevels);
+    onSelectValue6(selectedMinPrice);
+    onSelectValue7(selectedMaxPrice);
   };
   const [minPrice, setMinPrice] = useState(selectedValue6);
   const [maxPrice, setMaxPrice] = useState(selectedValue7);
@@ -514,7 +759,6 @@ const FliterModal = ({
 
   const [lazyFetchTitles, { data: titles }] =
     useLazyGetUniversityListDataQuery();
-  // console.log(titles);
   const [slideAnim] = useState(new Animated.Value(0));
 
   React.useEffect(() => {
@@ -546,12 +790,12 @@ const FliterModal = ({
       ...(selectedTitle && { university: selectedTitle?._id }),
       ...(selectedSubLocation && { subLocations: [selectedSubLocation?._id] }),
       ...(selectedFeeType && { feeType: selectedFeeType }),
-      ...(selectedCourseLevels && { courseLevels: selectedCourseLevels?.id }),
+      ...(selectedCourseLevels && { courseLevels: selectedCourseLevels?._id }),
       page: 1,
       size: 10,
       feeRange: [
         isNaN(parsedMinPrice) ? 0 : parsedMinPrice,
-        isNaN(parsedMaxPrice) ? 100000000 : parsedMaxPrice,
+        isNaN(parsedMaxPrice) ? 10000000000 : parsedMaxPrice,
       ],
     };
 
@@ -725,8 +969,6 @@ const FliterModal = ({
                 </Text>
               </View>
             </TouchableOpacity>
-            {/* <Button title="Search" color="black" /> */}
-            {/* <Button title="Cancel" color="black" /> */}
             <View style={{ flex: 1 }} />
             <TouchableOpacity onPress={handleResetFilters}>
               <View
@@ -752,6 +994,15 @@ const FliterModal = ({
   );
 };
 const styles = StyleSheet.create({
+  skeletonItem: {
+    height: 150,
+    width: SCREEN_WIDTH - 40,
+    backgroundColor: "#E0E0E0",
+    marginBottom: 10,
+    borderRadius: 8,
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
   screen: {
     height: SCREEN_HEIGHT,
     width: SCREEN_WIDTH,
@@ -869,12 +1120,24 @@ const styles = StyleSheet.create({
     color: "blue",
     fontSize: 16,
     fontWeight: "bold",
-    marginRight: 50,
+    marginRight: 5,
+  },
+  text2: {
+    color: "blue",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 5,
   },
   text: {
     color: "black",
     fontSize: 16,
-    // fontWeight: "bold",
     marginRight: 5,
+  },
+  selectedValue: {
+    borderWidth: 0.5,
+    borderRadius: 5,
+    padding: 5,
+    backgroundColor: "#DCDCDC",
+    margin: 2,
   },
 });

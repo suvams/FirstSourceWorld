@@ -7,19 +7,30 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Alert,
-  ActivityIndicator,
+  Linking,
   Share,
+  Dimensions,
 } from "react-native";
 import { RenderHTML } from "react-native-render-html";
 import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
 import {
   useGetCourseCatalogueDetailDataByIdQuery,
   usePostApplyForTheCourseMutation,
 } from "../rtkQuery/courseCatalogueDetailSlice";
 import { useGetAccountListDataQuery } from "../rtkQuery/accountListSlice";
 import { useLazyGetAccountEntityListDataQuery } from "../rtkQuery/accountEntityListSlice";
-
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const Skeleton = () => (
+  // Placeholder skeleton component
+  <View style={{ padding: 20 }}>
+    <View style={[styles.skeletonItem, { height: 170 }]} />
+    <View style={[styles.skeletonItem, { height: 200 }]} />
+    <View style={[styles.skeletonItem, { height: 300 }]} />
+    <View style={[styles.skeletonItem, { height: 500 }]} />
+  </View>
+);
 const CourseCatalogueDetailScreen = ({ route }) => {
   const scrollViewRef = useRef(null);
 
@@ -168,11 +179,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
     }
   };
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return <Skeleton />;
   }
 
   if (error) {
@@ -183,293 +190,327 @@ const CourseCatalogueDetailScreen = ({ route }) => {
     );
   }
   return (
-    <View>
+    <View style={{ backgroundColor: "white" }}>
       <ScrollView ref={scrollViewRef} scrollIndicatorInsets={false}>
-        <View style={{ flexDirection: "row", marginRight: 15 }}></View>
-        <View
-          style={{
-            padding: 15,
-            alignContent: "space-between",
-            justifyContent: "space-between",
-            backgroundColor: "white",
-          }}
-        >
-          <Text style={{ fontSize: 30, fontWeight: "bold" }}>
-            {data?.title}
-          </Text>
-          <View style={{ height: 10 }} />
-
-          <Text style={{ fontSize: 20, color: "blue" }}>
-            {data?.university?.title}
-          </Text>
-          <View style={{ height: 10 }} />
-
-          <TouchableOpacity onPress={handleApplyPress}>
-            <View style={styles.textInput3}>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                  Apply for the Course
+        <View>
+          <View style={{ flexDirection: "row", marginRight: 15 }}></View>
+          <View>
+            {/* <Text>{JSON.stringify(data, null, 30)}</Text> */}
+            <View
+              style={{
+                backgroundColor: "white",
+                margin: 15,
+                borderRadius: 10,
+                elevation: 10,
+              }}
+            >
+              <Image
+                source={{ uri: data?.university?.logo }}
+                resizeMode="contain"
+                style={{ height: 150, backgroundColor: "#DCDCDC" }}
+              />
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  alignSelf: "center",
+                  marginTop: 10,
+                }}
+              >
+                {data?.title}
+              </Text>
+              <TouchableOpacity
+                onPress={() => Linking.openURL(data?.university?.website)}
+              >
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: "blue",
+                    alignSelf: "center",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  {data?.university?.title}
                 </Text>
+              </TouchableOpacity>
+              <View style={{ height: 10 }} />
+              <View
+                style={{
+                  backgroundColor: "#ffc6c4",
+                  flexDirection: "row",
+                  padding: 5,
+                  borderRadius: 25,
+                  alignSelf: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={require("../../assets/location.png")}
+                  style={{ height: 15, width: 15 }}
+                />
+                <View style={{ width: 10 }} />
+                <Text style={{ fontSize: 15 }}>{data?.location?.name}</Text>
               </View>
-            </View>
-          </TouchableOpacity>
-
-          <View style={{ height: 20 }} />
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                backgroundColor: "#ffc6c4",
-                marginRight: 30,
-                flexDirection: "row",
-                padding: 6,
-                height: 30,
-                borderRadius: 25,
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={require("../../assets/location.png")}
-                style={{ height: 18, width: 18 }}
-              />
-              <View style={{ width: 10 }} />
-              <Text style={{ fontSize: 18 }}>{data?.location?.name}</Text>
-            </View>
-            <View
-              style={{
-                padding: 6,
-                flexDirection: "row",
-                alignSelf: "center",
-                justifyContent: "center",
-                height: 30,
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>4.5</Text>
-              <View style={{ width: 10 }} />
-              <Image
-                source={require("../../assets/star.png")}
-                style={{ height: 20, width: 20 }}
-              />
-              <Image
-                source={require("../../assets/star.png")}
-                style={{ height: 20, width: 20 }}
-              />
-              <Image
-                source={require("../../assets/star.png")}
-                style={{ height: 20, width: 20 }}
-              />
-              <Image
-                source={require("../../assets/star.png")}
-                style={{ height: 20, width: 20 }}
-              />
-              <Image
-                source={require("../../assets/halfStar.png")}
-                style={{ height: 20, width: 20 }}
-              />
-            </View>
-            <View style={{ flex: 0.9 }} />
-            <TouchableOpacity onPress={handleShare}>
-              <View style={styles.textInput3}>
-                <View style={{ flexDirection: "row" }}>
-                  <Image
-                    source={require("../../assets/share.png")}
-                    style={{ height: 8, width: 8, padding: 8 }}
-                  />
-                  <View style={{ width: 5 }} />
-                  <Text style={{ fontSize: 16, fontWeight: "500" }}>Share</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  paddingTop: 10,
+                }}
+              >
+                <View style={styles.textInput1}>
+                  <Ionicons name="md-cash-outline" size={24} />
+                  <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                    Tuition Fee
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "300",
+                        color: "green",
+                      }}
+                    >
+                      $ {data?.tuitionFee}
+                    </Text>
+                    <View style={{ width: 5 }} />
+                    <Text style={{ fontSize: 16, fontWeight: "300" }}>
+                      ({data?.currency?.code})
+                      <View style={{ width: 5 }} />
+                    </Text>
+                    <Text style={{ fontSize: 16, fontWeight: "300" }}>
+                      / {data?.feeType}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ height: 10 }} />
-          <View style={{ flexDirection: "row" }}>
-            <View style={{ flexDirection: "row" }}>
-              <View style={styles.textInput1}>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                  Tuition Fee
-                </Text>
-                <View style={{ flexDirection: "row" }}>
+                <View style={{ width: 25 }} />
+                <View>
+                  <Ionicons name="md-thumbs-up-outline" size={24} />
+                  <Text style={{ fontSize: 18 }}>Rating</Text>
+                  <Text style={{ fontSize: 18, color: "green" }}>4.5</Text>
+                </View>
+                <View style={{ width: 25 }} />
+
+                <View style={styles.textInput2}>
+                  <Ionicons name="md-book-outline" size={24} />
+                  <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                    Study Field
+                  </Text>
                   <Text
                     style={{ fontSize: 16, fontWeight: "300", color: "green" }}
                   >
-                    $ {data?.tuitionFee}
-                  </Text>
-                  <View style={{ width: 5 }} />
-                  <Text style={{ fontSize: 16, fontWeight: "300" }}>
-                    ({data?.currency?.code})
-                    <View style={{ width: 5 }} />
-                  </Text>
-                  <Text style={{ fontSize: 16, fontWeight: "300" }}>
-                    / {data?.feeType}
+                    {data?.field?.name}
                   </Text>
                 </View>
               </View>
-              <View style={{ width: 15 }} />
-              <View style={styles.textInput2}>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                  Study Field
-                </Text>
-                <Text style={{ fontSize: 16, fontWeight: "300" }}>
-                  {data?.field?.name}
-                </Text>
-              </View>
-              <View />
-            </View>
-          </View>
-          <View style={{ height: 10 }} />
-          <View
-            style={{
-              borderWidth: 0.5,
-              padding: 10,
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{ fontSize: 20, textAlign: "justify", fontWeight: "400" }}
-            >
-              Overview
-            </Text>
-            <RenderHTML
-              source={{ html: data?.summary + data?.learningOutcomes }}
-              contentWidth={0}
-              tagsStyles={{
-                p: {
-                  margin: 2,
-                  fontSize: 17,
-                  textAlign: "justify",
-                  fontWeight: "300",
-                },
-              }}
-            ></RenderHTML>
-          </View>
-          <View style={{ height: 30 }} />
-          <View style={{ borderWidth: 0.5, padding: 10, borderRadius: 10 }}>
-            <Text style={{ fontSize: 20 }}>Apply for Course</Text>
-            <View style={{ height: 10 }} />
-            <TextInput
-              placeholder="First Name"
-              value={firstName}
-              style={styles.textInput}
-              onChangeText={setFirstName}
-            />
-            <TextInput
-              placeholder="Last Name"
-              value={lastName}
-              style={styles.textInput}
-              onChangeText={setLastName}
-            />
-            <TextInput
-              placeholder="Email"
-              value={email}
-              style={styles.textInput}
-              onChangeText={setEmail}
-              onBlur={() => {
-                if (email && !emailRegex.test(email)) {
-                  setEmailError("Please enter a valid email address");
-                } else {
-                  setEmailError("");
-                }
-              }}
-            />
-            {emailError ? (
-              <Text style={styles.errorText}>{emailError}</Text>
-            ) : null}
-            <View style={styles.phoneContainer}>
-              <Picker
-                selectedValue={countryCode}
-                style={styles.countryCodePicker}
-                mode="dropdown"
-                onValueChange={(itemValue) => setCountryCode(itemValue)}
-              >
-                <Picker.Item label="+977 Nepal" value="+977" />
-                <Picker.Item label="+1 Canada and USA" value="+1" />
-                <Picker.Item label="+44 UK" value="+44" />
-                <Picker.Item label="+61 Australia" value="+61" />
-              </Picker>
-              <TextInput
-                placeholder="Phone"
-                value={phone}
-                style={styles.textInput4}
-                onChangeText={handlePhoneChange}
-                keyboardType="phone-pad"
-                onBlur={validatePhone}
-              />
-            </View>
-            {phoneError ? (
-              <Text style={styles.errorText}>{phoneError}</Text>
-            ) : null}
-
-            <View style={styles.btncontainer}>
-              <Picker
-                selectedValue={account}
-                onValueChange={(itemValue) => {
-                  setAccount(itemValue);
-                  setEntity(null);
+              <View
+                style={{
+                  flexDirection: "row",
+                  position: "relative",
+                  top: 25,
+                  margin: 8,
                 }}
-                mode="dropdown"
               >
-                <Picker.Item label="Select Agency" value={null} />
-                {accounts?.map((item) => (
-                  <Picker.Item label={item.name} value={item} key={item.name} />
-                ))}
-              </Picker>
+                <TouchableOpacity onPress={handleApplyPress}>
+                  <View style={styles.textInput3}>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                        Apply for the Course
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                <View style={{ flex: 1 }} />
+                <TouchableOpacity onPress={handleShare}>
+                  <View style={styles.textInput3}>
+                    <View style={{ flexDirection: "row" }}>
+                      <Image
+                        source={require("../../assets/share.png")}
+                        style={{ height: 8, width: 8, padding: 8 }}
+                      />
+                      <View style={{ width: 5 }} />
+                      <Text style={{ fontSize: 16, fontWeight: "500" }}>
+                        Share
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-            {account && (
+            <View
+              style={{
+                padding: 10,
+                marginTop: 15,
+                marginHorizontal: 15,
+                borderRadius: 10,
+                backgroundColor: "white",
+                elevation: 5,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 30,
+                  textAlign: "justify",
+                  fontWeight: "400",
+                  color: "blue",
+                  alignSelf: "center",
+                }}
+              >
+                Overview
+              </Text>
+              <RenderHTML
+                source={{ html: data?.summary + data?.learningOutcomes }}
+                contentWidth={0}
+                tagsStyles={{
+                  p: {
+                    margin: 2,
+                    fontSize: 17,
+                    textAlign: "justify",
+                    fontWeight: "300",
+                  },
+                }}
+              ></RenderHTML>
+            </View>
+            <View
+              style={{
+                borderWidth: 0.5,
+                padding: 10,
+                borderRadius: 10,
+                margin: 15,
+              }}
+            >
+              <Text style={{ fontSize: 20 }}>Apply for Course</Text>
+              <View style={{ height: 10 }} />
+              <TextInput
+                placeholder="First Name"
+                value={firstName}
+                style={styles.textInput}
+                onChangeText={setFirstName}
+              />
+              <TextInput
+                placeholder="Last Name"
+                value={lastName}
+                style={styles.textInput}
+                onChangeText={setLastName}
+              />
+              <TextInput
+                placeholder="Email"
+                value={email}
+                style={styles.textInput}
+                onChangeText={setEmail}
+                onBlur={() => {
+                  if (email && !emailRegex.test(email)) {
+                    setEmailError("Please enter a valid email address");
+                  } else {
+                    setEmailError("");
+                  }
+                }}
+              />
+              {emailError ? (
+                <Text style={styles.errorText}>{emailError}</Text>
+              ) : null}
+              <View style={styles.phoneContainer}>
+                <Picker
+                  selectedValue={countryCode}
+                  style={styles.countryCodePicker}
+                  mode="dropdown"
+                  onValueChange={(itemValue) => setCountryCode(itemValue)}
+                >
+                  <Picker.Item label="+977 Nepal" value="+977" />
+                  <Picker.Item label="+1 Canada and USA" value="+1" />
+                  <Picker.Item label="+44 UK" value="+44" />
+                  <Picker.Item label="+61 Australia" value="+61" />
+                </Picker>
+                <TextInput
+                  placeholder="Phone"
+                  value={phone}
+                  style={styles.textInput4}
+                  onChangeText={handlePhoneChange}
+                  keyboardType="phone-pad"
+                  onBlur={validatePhone}
+                />
+              </View>
+              {phoneError ? (
+                <Text style={styles.errorText}>{phoneError}</Text>
+              ) : null}
+
               <View style={styles.btncontainer}>
                 <Picker
-                  selectedValue={entity}
+                  selectedValue={account}
                   onValueChange={(itemValue) => {
-                    setEntity(itemValue);
+                    setAccount(itemValue);
+                    setEntity(null);
                   }}
                   mode="dropdown"
                 >
-                  <Picker.Item label="Select Entity" value={null} />
-                  {accountEntity?.map((item) => (
+                  <Picker.Item label="Select Agency" value={null} />
+                  {accounts?.map((item) => (
                     <Picker.Item
                       label={item.name}
-                      value={item._id}
-                      key={item._id}
+                      value={item}
+                      key={item.name}
                     />
                   ))}
                 </Picker>
               </View>
-            )}
+              {account && (
+                <View style={styles.btncontainer}>
+                  <Picker
+                    selectedValue={entity}
+                    onValueChange={(itemValue) => {
+                      setEntity(itemValue);
+                    }}
+                    mode="dropdown"
+                  >
+                    <Picker.Item label="Select Entity" value={null} />
+                    {accountEntity?.map((item) => (
+                      <Picker.Item
+                        label={item.name}
+                        value={item._id}
+                        key={item._id}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              )}
 
-            <TextInput
-              defaultValue={
-                "I am interested in applying for" +
-                " " +
-                data?.title +
-                ",located at" +
-                " " +
-                data?.location?.name
-              }
-              value={message}
-              onChangeText={setMessage}
-              style={[styles.textInput, { fontSize: 17 }]}
-              multiline={true}
-            />
-            <TouchableOpacity
-              onPress={handleSubmit}
-              disabled={isLoading}
-              style={{
-                backgroundColor: isLoading ? "grey" : "purple",
-                padding: 10,
-                borderRadius: 5,
-                alignSelf: "center",
-                marginTop: 20,
-                width: "100%",
-              }}
-            >
-              <Text
-                style={{ color: "white", fontSize: 18, alignSelf: "center" }}
+              <TextInput
+                defaultValue={
+                  "I am interested in applying for" +
+                  " " +
+                  data?.title +
+                  ",located at" +
+                  " " +
+                  data?.location?.name
+                }
+                value={message}
+                onChangeText={setMessage}
+                style={[styles.textInput, { fontSize: 17 }]}
+                multiline={true}
+              />
+              <TouchableOpacity
+                onPress={handleSubmit}
+                disabled={isLoading}
+                style={{
+                  backgroundColor: isLoading ? "grey" : "purple",
+                  padding: 10,
+                  borderRadius: 5,
+                  alignSelf: "center",
+                  marginTop: 20,
+                  width: "100%",
+                }}
               >
-                {isLoading
-                  ? "Applying for the Courses..."
-                  : "Apply for the Courses"}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{ color: "white", fontSize: 18, alignSelf: "center" }}
+                >
+                  {isLoading
+                    ? "Applying for the Courses..."
+                    : "Apply for the Courses"}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={{ height: 25 }} />
         </View>
       </ScrollView>
     </View>
@@ -477,6 +518,14 @@ const CourseCatalogueDetailScreen = ({ route }) => {
 };
 export default CourseCatalogueDetailScreen;
 const styles = StyleSheet.create({
+  skeletonItem: {
+    width: SCREEN_WIDTH - 40,
+    backgroundColor: "#E0E0E0",
+    marginBottom: 10,
+    borderRadius: 8,
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
   textInput: {
     width: "100%",
     borderRadius: 10,
@@ -488,26 +537,17 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   textInput1: {
-    borderRadius: 10,
-    borderWidth: 0.5,
     borderColor: "#8e8e8e",
     alignSelf: "center",
-    marginTop: 20,
-    padding: 10,
   },
   textInput2: {
-    borderRadius: 10,
-    borderWidth: 0.5,
     borderColor: "#8e8e8e",
     alignSelf: "center",
-    marginTop: 20,
-    padding: 10,
   },
   textInput3: {
-    borderRadius: 10,
+    borderRadius: 5,
     borderWidth: 0.5,
-    backgroundColor: "#DCDCDC",
-    alignSelf: "flex-start",
+    backgroundColor: "#ffc6c4",
     padding: 5,
   },
   btncontainer: {
