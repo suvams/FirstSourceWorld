@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -10,10 +10,19 @@ import {
 } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
 
-const SCREEN_HEIGHT = Dimensions.get("screen").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const OnboardingScreen = ({ navigation }) => {
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  useEffect(() => {
+    const onboardingCompleted = true;
+    if (onboardingCompleted) {
+      navigation.navigate("HomeScreen");
+    } else {
+      setShowOnboarding(true);
+    }
+  }, []);
+
   const handleDone = () => {
     navigation.navigate("First Source World");
   };
@@ -23,12 +32,9 @@ const OnboardingScreen = ({ navigation }) => {
       <Text style={{ marginLeft: 15 }}>Search Courses {"    "}</Text>
     </TouchableOpacity>
   );
-  const image = [
-    "https://www.firstsourceworld.com/static/media/australia.c697020dc77a37aa6887.png",
-    "https://www.firstsourceworld.com/static/media/canada.631ce2255956c41481e5.png",
-    "https://www.firstsourceworld.com/static/media/uk.048aaa2a50fc7d89ada7.png",
-    "https://www.firstsourceworld.com/static/media/usa.c5eff3911621da91754d.png",
-  ];
+  if (!showOnboarding) {
+    return null;
+  }
 
   return (
     <Onboarding

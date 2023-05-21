@@ -10,7 +10,7 @@ import {
   StatusBar,
   Image,
   Dimensions,
-  ActivityIndicator,
+  BackHandler,
   ScrollView,
   Animated,
   RefreshControl,
@@ -54,6 +54,15 @@ const Skeleton = () => (
   </View>
 );
 const CourseCataloguesScreen = React.memo(({ navigation }) => {
+  useEffect(() => {
+    const disableBackButton = () => {
+      return true;
+    };
+    BackHandler.addEventListener("hardwareBackPress", disableBackButton);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", disableBackButton);
+    };
+  }, []);
   const [search, setSearch] = useState("");
   // const searchRef = useRef();
   const [showModal, setShowModal] = useState(false);
