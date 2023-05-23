@@ -5,7 +5,7 @@ export const GetAccountListApiCall = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "https://firstsourceworld.com/api" }),
   endpoints: (builder) => ({
     getAccountListData: builder.query({
-      query: (params) => ({
+      query: () => ({
         url: "/public/accounts/list",
       }),
     }),

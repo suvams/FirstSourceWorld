@@ -5,7 +5,6 @@
 //   FlatList,
 //   Image,
 //   TouchableOpacity,
-//   ActivityIndicator,
 //   RefreshControl,
 // } from "react-native";
 

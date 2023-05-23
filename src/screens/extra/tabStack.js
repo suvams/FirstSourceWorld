@@ -28,36 +28,6 @@
 //           headerShown: false,
 //         }}
 //       />
-//       {/* <Tab.Screen
-//         name="SERVICES"
-//         component={ServicesScreen}
-//         options={{
-//           tabBarIcon: ({ color, size }) => (
-//             <Ionicons name="build-outline" color={color} size={size} />
-//           ),
-//           headerShown: false,
-//         }}
-//       />
-//       <Tab.Screen
-//         name="TEXT PREPARATION"
-//         component={TestPreparationScreen}
-//         options={{
-//           tabBarIcon: ({ color, size }) => (
-//             <Ionicons name="school-outline" color={color} size={size} />
-//           ),
-//           headerShown: false,
-//         }}
-//       /> */}
-//       {/* <Tab.Screen
-//         name="CONTACT US"
-//         component={ContactUsScreen}
-//         options={{
-//           tabBarIcon: ({ color, size }) => (
-//             <Ionicons name="chatbubble-outline" color={color} size={size} />
-//           ),
-//           headerShown: false,
-//         }}
-//       /> */}
 //     </Tab.Navigator>
 //   );
 // };

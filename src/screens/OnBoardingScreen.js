@@ -9,29 +9,56 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Onboarding from "react-native-onboarding-swiper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const OnboardingScreen = ({ navigation }) => {
   const [showOnboarding, setShowOnboarding] = useState(true);
+
   useEffect(() => {
-    const onboardingCompleted = true;
-    if (onboardingCompleted) {
-      navigation.navigate("HomeScreen");
-    } else {
-      setShowOnboarding(true);
-    }
+    checkOnboardingStatus();
   }, []);
 
-  const handleDone = () => {
-    navigation.navigate("First Source World");
+  useEffect(() => {
+    if (!showOnboarding) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "eduXGateway" }],
+      });
+    }
+  }, [showOnboarding, navigation]);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const onboardingCompleted = await AsyncStorage.getItem(
+        "onboardingCompleted"
+      );
+      if (onboardingCompleted) {
+        setShowOnboarding(false);
+      } else {
+        setShowOnboarding(true);
+      }
+    } catch (error) {
+      console.log("Error retrieving onboarding status:", error);
+    }
+  };
+
+  const handleDone = async () => {
+    try {
+      await AsyncStorage.setItem("onboardingCompleted", "true");
+      setShowOnboarding(false);
+    } catch (error) {
+      console.log("Error storing onboarding status:", error);
+    }
   };
 
   const DoneButton = () => (
     <TouchableOpacity style={styles.doneButton} onPress={handleDone}>
-      <Text style={{ marginLeft: 15 }}>Search Courses {"    "}</Text>
+      <Text>Search Courses {"    "}</Text>
     </TouchableOpacity>
   );
+
   if (!showOnboarding) {
     return null;
   }
@@ -45,11 +72,13 @@ const OnboardingScreen = ({ navigation }) => {
         {
           backgroundColor: "#fff",
           image: (
-            <Image
-              source={require("../../assets/logo.png")}
-              resizeMode="contain"
-              style={styles.logo}
-            />
+            <View>
+              <Image
+                source={require("../../assets/logo.png")}
+                resizeMode="contain"
+                style={styles.logo}
+              />
+            </View>
           ),
           title: "EQUIP YOU WITH BEST EDUCATION",
           subtitle: "Your Education is your Future, make the right move today",
@@ -58,48 +87,53 @@ const OnboardingScreen = ({ navigation }) => {
           backgroundColor: "#fff",
           image: (
             <View>
-              <View style={{ flexDirection: "row", padding: 10 }}>
-                <ImageBackground
-                  source={require("../../assets/australia.png")}
-                  resizeMode="contain"
-                  style={styles.logo2}
-                >
-                  <View style={styles.overlay}>
-                    <Text style={styles.textStyle1}>Australia</Text>
-                  </View>
-                </ImageBackground>
-
-                <View style={{ width: 10 }} />
-                <ImageBackground
-                  source={require("../../assets/canada.png")}
-                  resizeMode="contain"
-                  style={styles.logo2}
-                >
-                  <View style={styles.overlay}>
-                    <Text style={styles.textStyle1}>Canada</Text>
-                  </View>
-                </ImageBackground>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ width: "50%", padding: 5 }}>
+                  <ImageBackground
+                    source={require("../../assets/australia.png")}
+                    resizeMode="contain"
+                    style={styles.logo2}
+                  >
+                    <View style={styles.overlay}>
+                      <Text style={styles.textStyle1}>Australia</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
+                <View style={{ width: "50%", padding: 5 }}>
+                  <ImageBackground
+                    source={require("../../assets/canada.png")}
+                    resizeMode="contain"
+                    style={styles.logo2}
+                  >
+                    <View style={styles.overlay}>
+                      <Text style={styles.textStyle1}>Canada</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
               </View>
-              <View style={{ flexDirection: "row", padding: 10 }}>
-                <ImageBackground
-                  source={require("../../assets/uk.png")}
-                  resizeMode="contain"
-                  style={styles.logo2}
-                >
-                  <View style={styles.overlay}>
-                    <Text style={styles.textStyle1}>UK</Text>
-                  </View>
-                </ImageBackground>
-                <View style={{ width: 10 }} />
-                <ImageBackground
-                  source={require("../../assets/usa.png")}
-                  resizeMode="contain"
-                  style={styles.logo2}
-                >
-                  <View style={styles.overlay}>
-                    <Text style={styles.textStyle1}>USA</Text>
-                  </View>
-                </ImageBackground>
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ width: "50%", padding: 5 }}>
+                  <ImageBackground
+                    source={require("../../assets/uk.png")}
+                    resizeMode="contain"
+                    style={styles.logo2}
+                  >
+                    <View style={styles.overlay}>
+                      <Text style={styles.textStyle1}>UK</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
+                <View style={{ width: "50%", padding: 5 }}>
+                  <ImageBackground
+                    source={require("../../assets/usa.png")}
+                    resizeMode="contain"
+                    style={styles.logo2}
+                  >
+                    <View style={styles.overlay}>
+                      <Text style={styles.textStyle1}>USA</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
               </View>
             </View>
           ),
@@ -127,7 +161,7 @@ export default OnboardingScreen;
 
 const styles = StyleSheet.create({
   logo: {
-    width: 250,
+    width: SCREEN_WIDTH - 20,
     height: 250,
   },
   logo1: {
@@ -137,7 +171,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   logo2: {
-    width: 200,
     height: 100,
     borderRadius: 10,
     opacity: 0.9,

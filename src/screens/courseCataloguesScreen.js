@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,7 +10,6 @@ import {
   StatusBar,
   Image,
   Dimensions,
-  BackHandler,
   ScrollView,
   Animated,
   RefreshControl,
@@ -31,7 +30,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const Skeleton = () => (
   // Placeholder skeleton component
-  <View style={{ padding: 20 }}>
+  <View style={{ padding: 20, backgroundColor: "white" }}>
     <View
       style={{
         height: 30,
@@ -54,23 +53,9 @@ const Skeleton = () => (
   </View>
 );
 const CourseCataloguesScreen = React.memo(({ navigation }) => {
-  useEffect(() => {
-    const disableBackButton = () => {
-      return true;
-    };
-    BackHandler.addEventListener("hardwareBackPress", disableBackButton);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", disableBackButton);
-    };
-  }, []);
   const [search, setSearch] = useState("");
-  // const searchRef = useRef();
   const [showModal, setShowModal] = useState(false);
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(100000);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedSubLocation, setSelectedSubLocation] = useState(null);
-  const [selectedTitle, setSelectedTitle] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedValue1, setSelectedValue1] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
@@ -79,19 +64,11 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [selectedValue5, setSelectedValue5] = useState(null);
   const [selectedValue6, setSelectedValue6] = useState(null);
   const [selectedValue7, setSelectedValue7] = useState(null);
-  const [filteredCourse1, setFilteredCourse1] = useState([]);
 
   // RTK Query
 
   const [lazyCourseCatalogues, { data, isLoading, isFetching, error }] =
     useLazyGetCourseCataloguesDataQuery();
-
-  const { data: locations, isLoading: loadingLocations } =
-    useGetGlobalListDataQuery({
-      type: "Locations",
-      includeChildren: true,
-      status: "Active",
-    });
 
   const [lazyFetchSubLocactions] = useLazyGetGlobalListDataQuery();
 
@@ -320,7 +297,6 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
             style={{ fontSize: 17 }}
             placeholder="Search.."
             value={search}
-            // ref={searchRef}
             onChangeText={(tet) => {
               setSearch(tet);
             }}
@@ -345,7 +321,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
               <Text style={styles.text2}>You Filter The Folllowing: </Text>
             ) : null}
             <View>
-              <View style={styles.oneline}>
+              <View style={[styles.oneline, { flexWrap: "wrap" }]}>
                 {!!selectedValue1 && (
                   <TouchableOpacity
                     onPress={() =>
@@ -430,7 +406,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                   </TouchableOpacity>
                 </View>
               )}
-              <View style={styles.oneline}>
+              <View style={[styles.oneline, { flexWrap: "wrap" }]}>
                 {!!selectedValue4 && (
                   <TouchableOpacity
                     onPress={() =>
@@ -448,7 +424,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                     style={styles.selectedValue}
                   >
                     <View style={styles.oneline}>
-                      <Text style={styles.text}>Fee TYpe:</Text>
+                      <Text style={styles.text}>Fee Type:</Text>
                       <Text style={styles.text1}>{selectedValue4}</Text>
                       <Ionicons
                         name="close-circle-outline"
@@ -535,94 +511,111 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 {data.totalItems} results found!
               </Text>
               {filteredCourse.length > 0 ? (
-                <FlatList
-                  scrollIndicatorInsets={false}
-                  nestedScrollEnabled={true}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={handleRefresh}
-                    />
-                  }
-                  data={filteredCourse}
-                  keyExtractor={(item) => item?._id.toString()}
-                  renderItem={({ item }) => {
-                    return (
-                      <View>
-                        <Text style={{ color: "black" }}>
-                          {item?.totalItems}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate("Detail", {
-                              item,
-                            })
-                          }
-                        >
-                          {/* <Text>{JSON.stringify(data, null, 30)}</Text> */}
-                          <View style={styles.cataloguesListsContainer}>
-                            <View style={styles.oneline}>
-                              <Image
-                                source={{ uri: item?.university?.logo }}
-                                style={{ height: 110, width: 110, zIndex: 1 }}
-                              />
-                              <View style={{ width: 20 }} />
-                              <View
-                                style={{
-                                  justifyContent: "space-between",
-                                  alignContent: "space-between",
-                                  flexShrink: 1,
-                                  paddingHorizontal: 10,
-                                }}
-                              >
-                                <Text
-                                  style={{ fontSize: 23, fontWeight: "500" }}
+                <View style={{ height: SCREEN_HEIGHT - 150 }}>
+                  <FlatList
+                    scrollIndicatorInsets={false}
+                    ListFooterComponent={<View style={{ height: 100 }} />}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                      />
+                    }
+                    data={filteredCourse}
+                    keyExtractor={(item) => item?._id.toString()}
+                    renderItem={({ item }) => {
+                      return (
+                        <View>
+                          <Text style={{ color: "black" }}>
+                            {item?.totalItems}
+                          </Text>
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate("Detail", {
+                                item,
+                              })
+                            }
+                          >
+                            {/* <Text>{JSON.stringify(data, null, 30)}</Text> */}
+                            <View style={styles.cataloguesListsContainer}>
+                              <View style={styles.oneline}>
+                                <Image
+                                  source={{ uri: item?.university?.logo }}
+                                  style={{ height: 110, width: 110, zIndex: 1 }}
+                                />
+                                <View style={{ width: 20 }} />
+                                <View
+                                  style={{
+                                    justifyContent: "space-between",
+                                    alignContent: "space-between",
+                                    flexShrink: 1,
+                                    paddingHorizontal: 10,
+                                  }}
                                 >
-                                  {item?.title}
-                                </Text>
-                                <Text style={{ color: "blue", fontSize: 18 }}>
-                                  {item?.university?.title}
-                                </Text>
-                                <View style={styles.oneline}>
-                                  <Text style={{ fontSize: 16 }}>
-                                    {item?.location?.name}{" "}
-                                  </Text>
-                                  <Text style={{ fontSize: 16 }}>
-                                    {"   "}
-                                    {item?.subLocations[0]?.name}
-                                  </Text>
-                                </View>
-                                <View style={styles.oneline}>
-                                  <Text style={{ fontSize: 16 }}>
-                                    {item?.duration?.name}
-                                    {"   "}
-                                  </Text>
-                                  <Text style={{ fontSize: 16 }}>
-                                    {item?.level?.name} Level
-                                  </Text>
-                                </View>
-                                <View style={styles.oneline}>
                                   <Text
-                                    style={{ fontSize: 18, color: "green" }}
+                                    style={{ fontSize: 23, fontWeight: "500" }}
                                   >
-                                    $ {item?.tuitionFee}{" "}
+                                    {item?.title}
                                   </Text>
-                                  <Text style={{ fontSize: 16 }}>
-                                    ({item?.currency?.code}){" "}
+                                  <Text style={{ color: "blue", fontSize: 18 }}>
+                                    {item?.university?.title}
                                   </Text>
-                                  <Text style={{ fontSize: 16 }}>
-                                    {"/"}
-                                    {item?.feeType}
-                                  </Text>
+                                  <View
+                                    style={[
+                                      styles.oneline,
+                                      { flexWrap: "wrap" },
+                                    ]}
+                                  >
+                                    <Text style={{ fontSize: 16 }}>
+                                      {item?.location?.name}{" "}
+                                    </Text>
+                                    <Text style={{ fontSize: 16 }}>
+                                      {"   "}
+                                      {item?.subLocations[0]?.name}
+                                    </Text>
+                                  </View>
+                                  <View
+                                    style={[
+                                      styles.oneline,
+                                      { flexWrap: "wrap" },
+                                    ]}
+                                  >
+                                    <Text style={{ fontSize: 16 }}>
+                                      {item?.duration?.name}
+                                      {"   "}
+                                    </Text>
+                                    <Text style={{ fontSize: 16 }}>
+                                      {item?.level?.name} Level
+                                    </Text>
+                                  </View>
+                                  <View
+                                    style={[
+                                      styles.oneline,
+                                      { flexWrap: "wrap" },
+                                    ]}
+                                  >
+                                    <Text
+                                      style={{ fontSize: 18, color: "green" }}
+                                    >
+                                      $ {item?.tuitionFee}{" "}
+                                    </Text>
+                                    <Text style={{ fontSize: 16 }}>
+                                      ({item?.currency?.code}){" "}
+                                    </Text>
+                                    <Text style={{ fontSize: 16 }}>
+                                      {"/"}
+                                      {item?.feeType}
+                                    </Text>
+                                  </View>
                                 </View>
                               </View>
                             </View>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  }}
-                />
+                          </TouchableOpacity>
+                        </View>
+                      );
+                    }}
+                  />
+                </View>
               ) : (
                 <View
                   style={{ justifyContent: "center", alignContent: "center" }}
@@ -841,7 +834,6 @@ const FliterModal = ({
                   selectedValue={selectedSubLocation}
                   onValueChange={(itemValue) => {
                     setSelectedSubLocation(itemValue);
-                    // setSelectedTitle(null);
                   }}
                   mode="dropdown"
                 >
@@ -994,7 +986,6 @@ const FliterModal = ({
                 </Text>
               </View>
             </TouchableOpacity>
-            {/* <Button title="Reset" color="black" /> */}
             <View style={{ flex: 1 }} />
           </View>
         </View>
@@ -1056,10 +1047,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   cataloguesListsContainer: {
-    // width: "95%",
     marginLeft: 20,
     marginRight: 20,
-    // marginTop: 10,
     borderWidth: 0.5,
     borderRadius: 8,
     paddingLeft: 15,
@@ -1089,7 +1078,6 @@ const styles = StyleSheet.create({
   },
   countryItem2: {
     width: "95%",
-    // height: 50,
     borderBottomWidth: 0.9,
     borderBottomColor: "#8e8e8e",
     alignSelf: "center",

@@ -2,19 +2,15 @@
 // import {
 //   View,
 //   StyleSheet,
-//   TouchableOpacity,
 //   TextInput,
-//   FlatList,
 //   Text,
 //   Modal,
 //   Button,
-//   StatusBar,
-//   Image,
 //   Dimensions,
-//   TouchableWithoutFeedback,
 // } from "react-native";
 // import { useGetDataQuery } from "../rtkQuery/getData";
 // import { Picker } from "@react-native-picker/picker";
+
 // const SCREEN_HEIGHT = Dimensions.get("window").height;
 // const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -25,12 +21,15 @@
 //       show: false,
 //     };
 //   }
+
 //   show = () => {
 //     this.setState({ show: true });
 //   };
+
 //   close = () => {
 //     this.setState({ show: false });
 //   };
+
 //   render() {
 //     const { data, isLoading, error } = useGetDataQuery();
 
@@ -195,4 +194,5 @@
 //     justifyContent: "center",
 //   },
 // });
+
 // export default FliterModal;

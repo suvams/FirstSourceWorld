@@ -28,22 +28,6 @@ export const GetCourseCataloguesApiCall = createApi({
         url: "/public/course-catalogues?page=1&size=1000000",
       }),
     }),
-    // addNewPost: builder.mutation({
-    //   query: (data) => ({
-    //     url: "/public/course-catalogues?page=1&size=10",
-    //     method: "post",
-    //     // body: JSON.stringify(data),
-    //     body: data,
-    //   }),
-    // }),
-    // deletePost: builder.mutation({
-    //   query: (id) => ({
-    //     url: "/public/course-catalogues?page=1&size=10" + "/" + id,
-    //     method: "Delete",
-    //     // body: JSON.stringify(data),
-    //     // body: data,
-    //   }),
-    // }),
   }),
 });
 export const {

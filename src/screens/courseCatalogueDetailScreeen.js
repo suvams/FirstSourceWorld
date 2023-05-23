@@ -24,7 +24,7 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const Skeleton = () => (
   // Placeholder skeleton component
-  <View style={{ padding: 20 }}>
+  <View style={{ padding: 20, backgroundColor: "white" }}>
     <View style={[styles.skeletonItem, { height: 170 }]} />
     <View style={[styles.skeletonItem, { height: 200 }]} />
     <View style={[styles.skeletonItem, { height: 300 }]} />
@@ -254,6 +254,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               <View
                 style={{
                   flexDirection: "row",
+                  flexWrap: "wrap",
                   paddingLeft: 20,
                   paddingRight: 20,
                   paddingTop: 10,

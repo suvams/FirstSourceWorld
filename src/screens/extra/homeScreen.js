@@ -32,57 +32,58 @@
 //   "https://www.firstsourceworld.com/static/media/uk.048aaa2a50fc7d89ada7.png",
 //   "https://www.firstsourceworld.com/static/media/usa.c5eff3911621da91754d.png",
 // ];
-// // const items = [
-// //   {
-// //     id: "1",
+// const items = [
+//   {
+//     id: "1",
 
-// //     image:
-// //       "https://www.firstsourceworld.com/static/media/avatar1.049cc8a9bd99f75138e8.jpg",
-// //     name: "Ditya Gaire",
-// //     description:
-// //       "“ FSW is the best education consultancy in Nepal. They provided great assistance on my student visa application in Melbourne, Australia. Additionally, the team has been very approachable and always there to answer all my queries. They are the best consultancy in Nepal for Australia. ”",
-// //   },
-// //   {
-// //     id: "2",
+//     image:
+//       "https://www.firstsourceworld.com/static/media/avatar1.049cc8a9bd99f75138e8.jpg",
+//     name: "Ditya Gaire",
+//     description:
+//       "“ FSW is the best education consultancy in Nepal. They provided great assistance on my student visa application in Melbourne, Australia. Additionally, the team has been very approachable and always there to answer all my queries. They are the best consultancy in Nepal for Australia. ”",
+//   },
+//   {
+//     id: "2",
 
-// //     image:
-// //       "https://www.firstsourceworld.com/static/media/avatar2.18fd8d10bdafc1cf1afb.png",
-// //     name: "Pooja Shrestha",
-// //     description:
-// //       "“ I am ever grateful to the competent team for helping me attain my Canada student visa in no time. The consultation and customer services they provide is efficient and excellent. FSW is the best education consultancy in Kathmandu and also they are the best consultancy in Nepal for Canada. ”",
-// //   },
-// //   {
-// //     id: "3",
+//     image:
+//       "https://www.firstsourceworld.com/static/media/avatar2.18fd8d10bdafc1cf1afb.png",
+//     name: "Pooja Shrestha",
+//     description:
+//       "“ I am ever grateful to the competent team for helping me attain my Canada student visa in no time. The consultation and customer services they provide is efficient and excellent. FSW is the best education consultancy in Kathmandu and also they are the best consultancy in Nepal for Canada. ”",
+//   },
+//   {
+//     id: "3",
 
-// //     image:
-// //       "https://www.firstsourceworld.com/static/media/avatar3.69d2d45ed00b91594f5f.png",
-// //     name: "Dilip Rana",
-// //     description:
-// //       " Hello I am Dilip Rana and I have recently got my visa granted to study in Australia with 50% Scholarship and for this FSW supported me a lot and they also praised me to get this scholarship. I am very thankful to FSW team. So if you guys are planning for study abroad then FSW would be the best option for you.",
-// //   },
-// //   {
-// //     id: "4",
+//     image:
+//       "https://www.firstsourceworld.com/static/media/avatar3.69d2d45ed00b91594f5f.png",
+//     name: "Dilip Rana",
+//     description:
+//       " Hello I am Dilip Rana and I have recently got my visa granted to study in Australia with 50% Scholarship and for this FSW supported me a lot and they also praised me to get this scholarship. I am very thankful to FSW team. So if you guys are planning for study abroad then FSW would be the best option for you.",
+//   },
+//   {
+//     id: "4",
 
-// //     image:
-// //       "https://www.firstsourceworld.com/static/media/avatar4.33515e350ea1198e35b3.png",
-// //     name: "Umesh Dhungel    ",
-// //     description:
-// //       "“ I very thankful to this consultancy that they supported me in every step of my processing and finally granted my visa for Australia.. I would like to give the credit for this success to FSW and the team. Thank you for your guidelines and suggestions.”",
-// //   },
-// // ];
-// // const Container = ({ title, image, description, backgroundColor }) => (
-// //   <View style={[styles.container, { backgroundColor }]}>
-// //     <Text style={styles.title}>{title}</Text>
-// //     <Text style={styles.title}>{description}</Text>
-// //     <Image
-// //       source={{
-// //         uri: image,
-// //       }}
-// //       resizeMode="cover"
-// //       style={styles.logo2}
-// //     />
-// //   </View>
-// // );
+//     image:
+//       "https://www.firstsourceworld.com/static/media/avatar4.33515e350ea1198e35b3.png",
+//     name: "Umesh Dhungel    ",
+//     description:
+//       "“ I very thankful to this consultancy that they supported me in every step of my processing and finally granted my visa for Australia.. I would like to give the credit for this success to FSW and the team. Thank you for your guidelines and suggestions.”",
+//   },
+// ];
+
+// const Container = ({ title, image, description, backgroundColor }) => (
+//   <View style={[styles.container, { backgroundColor }]}>
+//     <Text style={styles.title}>{title}</Text>
+//     <Text style={styles.title}>{description}</Text>
+//     <Image
+//       source={{
+//         uri: image,
+//       }}
+//       resizeMode="cover"
+//       style={styles.logo2}
+//     />
+//   </View>
+// );
 
 // const HomeScreen = ({ navigation }) => {
 //   const [currentImage, setCurrentImage] = useState(images[0]);
@@ -152,7 +153,7 @@
 //     <>
 //       <StatusBar backgroundColor="#be4d25" barStyle="dark-content"></StatusBar>
 //       <SafeAreaView>
-//         {/* <View
+//         <View
 //           style={{
 //             marginRight: 15,
 //             flexDirection: "row",
@@ -183,7 +184,7 @@
 //               </Text>
 //             </View>
 //           </TouchableOpacity>
-//         </View> */}
+//         </View>
 //         <ScrollView>
 //           <View style={{ height: SCREEN_HEIGHT }}>
 //             <ImageBackground
@@ -300,10 +301,9 @@
 //               uri: "https://www.firstsourceworld.com/static/media/worldMap.71126adbb018eb0e0613.png",
 //             }}
 //             resizeMode="contain"
-//             // style={{ flex: 1 }}
 //             style={styles.logo1}
 //           />
-//           {/* <FlatList
+//           <FlatList
 //             data={items}
 //             horizontal={true}
 //             pagingEnabled={true}
@@ -316,7 +316,7 @@
 //               />
 //             )}
 //             keyExtractor={(item) => item.id}
-//           /> */}
+//           />
 //           <View style={{ marginBottom: 80 }} />
 //         </ScrollView>
 //       </SafeAreaView>
@@ -336,20 +336,20 @@
 //     opacity: 1,
 //     overflow: "hidden",
 //   },
-//   // logo: {
-//   //   width: 250,
-//   // },
+//   logo: {
+//     width: 250,
+//   },
 //   logo1: {
 //     height: 200,
 //     marginLeft: 15,
 //     marginRight: 15,
 //     flex: 1,
 //   },
-//   // logo2: {
-//   //   height: 100,
-//   //   width: 100,
-//   //   borderRadius: 50,
-//   // },
+//   logo2: {
+//     height: 100,
+//     width: 100,
+//     borderRadius: 50,
+//   },
 //   overlay: {
 //     position: "absolute",
 //     left: 20,
@@ -396,17 +396,17 @@
 //     color: "white",
 //     marginBottom: 10,
 //   },
-//   // container: {
-//   //   width: SCREEN_WIDTH,
-//   //   // height: 200,
-//   //   alignItems: "center",
-//   //   justifyContent: "center",
-//   // },
-//   // title: {
-//   //   fontSize: 24,
-//   //   fontWeight: "bold",
-//   //   color: "#fff",
-//   // },
+//   container: {
+//     width: SCREEN_WIDTH,
+//     height: 200,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     color: "#fff",
+//   },
 // });
 
 // export default HomeScreen;
