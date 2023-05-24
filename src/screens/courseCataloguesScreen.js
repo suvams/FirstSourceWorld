@@ -531,7 +531,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                           </Text>
                           <TouchableOpacity
                             onPress={() =>
-                              navigation.navigate("Detail", {
+                              navigation.navigate("Course Detail", {
                                 item,
                               })
                             }
