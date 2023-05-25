@@ -169,96 +169,116 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
     selectedValue6,
     selectedValue7
   ) => {
-    // console.log(selectedValue1);
     switch (valueNumber) {
       case 1:
         setSelectedValue1("");
-        const queryParams1 = {
-          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-          ...(selectedValue3 && { university: selectedValue3?.id }),
-          ...(selectedValue4 && { feeType: selectedValue4 }),
-          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-          page: 1,
-          size: 10,
-          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        };
-        console.log(queryParams1);
-        handleSearchCourses(queryParams1);
+        // const queryParams1 = {
+        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue3 && { university: selectedValue3?.id }),
+        //   ...(selectedValue4 && { feeType: selectedValue4 }),
+        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+        //   page: 1,
+        //   size: 10,
+        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        // };
+        // console.log(queryParams1);
+        // handleSearchCourses(queryParams1);
         break;
       case 2:
         setSelectedValue2("");
-        const queryParams2 = {
-          ...(selectedValue1 && { location: selectedValue1?.id }),
-          ...(selectedValue3 && { university: selectedValue3?.id }),
-          ...(selectedValue4 && { feeType: selectedValue4 }),
-          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-          page: 1,
-          size: 10,
-          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        };
-        console.log(queryParams2);
-        handleSearchCourses(queryParams2);
+        // const queryParams2 = {
+        //   ...(selectedValue1 && { location: selectedValue1?.id }),
+        //   ...(valueNumber !== 2 &&
+        //     selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue3 && { university: selectedValue3?.id }),
+        //   ...(selectedValue4 && { feeType: selectedValue4 }),
+        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+        //   page: 1,
+        //   size: 10,
+        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        // };
+        // console.log(queryParams2);
+        // handleSearchCourses(queryParams2);
         break;
       case 3:
         setSelectedValue3("");
-        const queryParams3 = {
-          ...(selectedValue1 && { location: selectedValue1?.id }),
-          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-          ...(selectedValue4 && { feeType: selectedValue4 }),
-          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-          page: 1,
-          size: 10,
-          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        };
-        console.log(queryParams3);
-        handleSearchCourses(queryParams3);
+        // const queryParams3 = {
+        //   ...(selectedValue1 && { location: selectedValue1?.id }),
+        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue4 && { feeType: selectedValue4 }),
+        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+        //   page: 1,
+        //   size: 10,
+        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        // };
+        // console.log(queryParams3);
+        // handleSearchCourses(queryParams3);
         break;
       case 4:
         setSelectedValue4("");
-        const queryParams4 = {
-          ...(selectedValue1 && { location: selectedValue1?.id }),
-          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-          ...(selectedValue3 && { university: selectedValue3?.id }),
-          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-          page: 1,
-          size: 10,
-          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        };
-        console.log(queryParams4);
-        handleSearchCourses(queryParams4);
+        // const queryParams4 = {
+        //   ...(selectedValue1 && { location: selectedValue1?.id }),
+        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue3 && { university: selectedValue3?.id }),
+        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+        //   page: 1,
+        //   size: 10,
+        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        // };
+        // console.log(queryParams4);
+        // handleSearchCourses(queryParams4);
         break;
       case 5:
         setSelectedValue5("");
-        const queryParams5 = {
-          ...(selectedValue1 && { location: selectedValue1?.id }),
-          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-          ...(selectedValue3 && { university: selectedValue3?.id }),
-          ...(selectedValue4 && { feeType: selectedValue4 }),
-          page: 1,
-          size: 10,
-          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        };
-        console.log(queryParams5);
-        handleSearchCourses(queryParams5);
+        // const queryParams5 = {
+        //   ...(selectedValue1 && { location: selectedValue1?.id }),
+        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue3 && { university: selectedValue3?.id }),
+        //   ...(selectedValue4 && { feeType: selectedValue4 }),
+        //   page: 1,
+        //   size: 10,
+        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        // };
+        // console.log(queryParams5);
+        // handleSearchCourses(queryParams5);
         break;
       case 6:
         setSelectedValue6("");
         setSelectedValue7("");
-        const queryParams6 = {
-          ...(selectedValue1 && { location: selectedValue1?.id }),
-          ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-          ...(selectedValue3 && { university: selectedValue3?.id }),
-          ...(selectedValue4 && { feeType: selectedValue4 }),
-          ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-          page: 1,
-          size: 10,
-        };
-        console.log(queryParams6);
-        handleSearchCourses(queryParams6);
+        // const queryParams6 = {
+        //   ...(selectedValue1 && { location: selectedValue1?.id }),
+        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
+        //   ...(selectedValue3 && { university: selectedValue3?.id }),
+        //   ...(selectedValue4 && { feeType: selectedValue4 }),
+        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
+        //   page: 1,
+        //   size: 10,
+        // };
+        // console.log(queryParams6);
+        // handleSearchCourses(queryParams6);
         break;
       default:
         break;
     }
+    const queryParams2 = {
+      ...(valueNumber !== 1 &&
+        selectedValue1 && { location: selectedValue1?.id }),
+      ...(valueNumber !== 2 &&
+        selectedValue2 && { subLocations: selectedValue2?.id }),
+      ...(valueNumber !== 3 &&
+        selectedValue3 && { university: selectedValue3?.id }),
+      ...(valueNumber !== 4 && selectedValue4 && { feeType: selectedValue4 }),
+      ...(valueNumber !== 5 &&
+        selectedValue5 && { courseLevels: selectedValue5?.id }),
+      page: 1,
+      size: 10,
+      ...(valueNumber !== 6 &&
+        valueNumber !== 7 && {
+          feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
+        }),
+    };
+    console.log(queryParams2);
+    handleSearchCourses(queryParams2);
   };
 
   return (
@@ -463,7 +483,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 )}
               </View>
               <View style={styles.oneline}>
-                {selectedValue6 && selectedValue7 && (
+                {selectedValue6 || selectedValue7 ? (
                   <TouchableOpacity
                     onPress={() =>
                       handleRemoveValue(
@@ -491,7 +511,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                       />
                     </View>
                   </TouchableOpacity>
-                )}
+                ) : null}
               </View>
             </View>
           </View>
@@ -511,10 +531,10 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 {data.totalItems} results found!
               </Text>
               {filteredCourse.length > 0 ? (
-                <View style={{ height: SCREEN_HEIGHT - 150 }}>
+                <View>
                   <FlatList
                     scrollIndicatorInsets={false}
-                    ListFooterComponent={<View style={{ height: 100 }} />}
+                    ListFooterComponent={<View style={{ height: 500 }} />}
                     refreshControl={
                       <RefreshControl
                         refreshing={refreshing}
