@@ -13,8 +13,10 @@ import {
   ScrollView,
   Animated,
   RefreshControl,
+  SafeAreaView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import SelectDropdown from "react-native-select-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useLazyGetCourseCataloguesDataQuery,
@@ -172,90 +174,22 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
     switch (valueNumber) {
       case 1:
         setSelectedValue1("");
-        // const queryParams1 = {
-        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue3 && { university: selectedValue3?.id }),
-        //   ...(selectedValue4 && { feeType: selectedValue4 }),
-        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-        //   page: 1,
-        //   size: 10,
-        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        // };
-        // console.log(queryParams1);
-        // handleSearchCourses(queryParams1);
         break;
       case 2:
         setSelectedValue2("");
-        // const queryParams2 = {
-        //   ...(selectedValue1 && { location: selectedValue1?.id }),
-        //   ...(valueNumber !== 2 &&
-        //     selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue3 && { university: selectedValue3?.id }),
-        //   ...(selectedValue4 && { feeType: selectedValue4 }),
-        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-        //   page: 1,
-        //   size: 10,
-        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        // };
-        // console.log(queryParams2);
-        // handleSearchCourses(queryParams2);
         break;
       case 3:
         setSelectedValue3("");
-        // const queryParams3 = {
-        //   ...(selectedValue1 && { location: selectedValue1?.id }),
-        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue4 && { feeType: selectedValue4 }),
-        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-        //   page: 1,
-        //   size: 10,
-        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        // };
-        // console.log(queryParams3);
-        // handleSearchCourses(queryParams3);
         break;
       case 4:
         setSelectedValue4("");
-        // const queryParams4 = {
-        //   ...(selectedValue1 && { location: selectedValue1?.id }),
-        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue3 && { university: selectedValue3?.id }),
-        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-        //   page: 1,
-        //   size: 10,
-        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        // };
-        // console.log(queryParams4);
-        // handleSearchCourses(queryParams4);
         break;
       case 5:
         setSelectedValue5("");
-        // const queryParams5 = {
-        //   ...(selectedValue1 && { location: selectedValue1?.id }),
-        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue3 && { university: selectedValue3?.id }),
-        //   ...(selectedValue4 && { feeType: selectedValue4 }),
-        //   page: 1,
-        //   size: 10,
-        //   feeRange: [selectedValue6 || 0, selectedValue7 || 100000000000],
-        // };
-        // console.log(queryParams5);
-        // handleSearchCourses(queryParams5);
         break;
       case 6:
         setSelectedValue6("");
         setSelectedValue7("");
-        // const queryParams6 = {
-        //   ...(selectedValue1 && { location: selectedValue1?.id }),
-        //   ...(selectedValue2 && { subLocations: selectedValue2?.id }),
-        //   ...(selectedValue3 && { university: selectedValue3?.id }),
-        //   ...(selectedValue4 && { feeType: selectedValue4 }),
-        //   ...(selectedValue5 && { courseLevels: selectedValue5?.id }),
-        //   page: 1,
-        //   size: 10,
-        // };
-        // console.log(queryParams6);
-        // handleSearchCourses(queryParams6);
         break;
       default:
         break;
@@ -282,256 +216,262 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   };
 
   return (
-    <View style={[styles.screen]}>
-      <View
-        style={{
-          ...(showModal && {
-            backgroundColor: "black",
-            opacity: 0.3,
-            zIndex: 2,
-          }),
-        }}
-      >
-        <StatusBar />
-        <FliterModal
-          showModal={showModal}
-          setShowModal={setShowModal}
-          onSearch={handleSearchCourses}
-          selectedValue1={selectedValue1}
-          selectedValue2={selectedValue2}
-          selectedValue3={selectedValue3}
-          selectedValue4={selectedValue4}
-          selectedValue5={selectedValue5}
-          selectedValue6={selectedValue6}
-          selectedValue7={selectedValue7}
-          onSelectValue1={handleSelectValue1}
-          onSelectValue2={handleSelectValue2}
-          onSelectValue3={handleSelectValue3}
-          onSelectValue4={handleSelectValue4}
-          onSelectValue5={handleSelectValue5}
-          onSelectValue6={handleSelectValue6}
-          onSelectValue7={handleSelectValue7}
-        />
-        <View style={[styles.searchInput, styles.oneline]}>
-          <TextInput
-            style={{ fontSize: 17 }}
-            placeholder="Search.."
-            value={search}
-            onChangeText={(tet) => {
-              setSearch(tet);
-            }}
+    <SafeAreaView>
+      <View style={[styles.screen]}>
+        <View
+          style={{
+            ...(showModal && {
+              backgroundColor: "black",
+              opacity: 0.3,
+              zIndex: 2,
+            }),
+          }}
+        >
+          <StatusBar />
+          <FliterModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+            onSearch={handleSearchCourses}
+            selectedValue1={selectedValue1}
+            selectedValue2={selectedValue2}
+            selectedValue3={selectedValue3}
+            selectedValue4={selectedValue4}
+            selectedValue5={selectedValue5}
+            selectedValue6={selectedValue6}
+            selectedValue7={selectedValue7}
+            onSelectValue1={handleSelectValue1}
+            onSelectValue2={handleSelectValue2}
+            onSelectValue3={handleSelectValue3}
+            onSelectValue4={handleSelectValue4}
+            onSelectValue5={handleSelectValue5}
+            onSelectValue6={handleSelectValue6}
+            onSelectValue7={handleSelectValue7}
           />
-          <View style={{ flex: 1 }} />
-          <TouchableOpacity onPress={() => setShowModal(true)}>
-            <Image
-              source={require("../../assets/filter.png")}
-              style={{ height: 25, width: 25 }}
+          <View style={[styles.searchInput, styles.oneline]}>
+            <TextInput
+              style={{ fontSize: 17 }}
+              placeholder="Search.."
+              value={search}
+              onChangeText={(tet) => {
+                setSearch(tet);
+              }}
             />
-          </TouchableOpacity>
-        </View>
-        <View style={{ marginLeft: 15, marginTop: 10 }}>
-          <View>
-            {!!selectedValue1 ||
-            !!selectedValue2 ||
-            !!selectedValue3 ||
-            !!selectedValue5 ||
-            !!selectedValue4 ||
-            !!selectedValue6 ||
-            !!selectedValue7 ? (
-              <Text style={styles.text2}>You Filter The Folllowing: </Text>
-            ) : null}
+            <View style={{ flex: 1 }} />
+            <TouchableOpacity onPress={() => setShowModal(true)}>
+              <Image
+                source={require("../../assets/filter.png")}
+                style={{ height: 25, width: 25 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowModal(true)}>
+              <Image
+                source={require("../../assets/filter.png")}
+                style={{ height: 25, width: 25 }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ marginLeft: 15, marginTop: 10 }}>
             <View>
-              <View style={[styles.oneline, { flexWrap: "wrap" }]}>
-                {!!selectedValue1 && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        1,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Location:</Text>
-                      <Text style={styles.text1}>{selectedValue1?.name}</Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
-                )}
-                {!!selectedValue2 && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        2,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Sub Location:</Text>
-                      <Text style={styles.text1}>{selectedValue2?.name}</Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
-                )}
-              </View>
-              {!!selectedValue3 && (
-                <View style={styles.oneline}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        3,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Course Title:</Text>
-                      <Text style={styles.text1}>{selectedValue3?.name}</Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
+              {!!selectedValue1 ||
+              !!selectedValue2 ||
+              !!selectedValue3 ||
+              !!selectedValue5 ||
+              !!selectedValue4 ||
+              !!selectedValue6 ||
+              !!selectedValue7 ? (
+                <Text style={styles.text2}>You Filter The Folllowing: </Text>
+              ) : null}
+              <View>
+                <View style={[styles.oneline, { flexWrap: "wrap" }]}>
+                  {!!selectedValue1 && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          1,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Location:</Text>
+                        <Text style={styles.text1}>{selectedValue1?.name}</Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {!!selectedValue2 && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          2,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Sub Location:</Text>
+                        <Text style={styles.text1}>{selectedValue2?.name}</Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )}
                 </View>
-              )}
-              <View style={[styles.oneline, { flexWrap: "wrap" }]}>
-                {!!selectedValue4 && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        4,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Fee Type:</Text>
-                      <Text style={styles.text1}>{selectedValue4}</Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
+                {!!selectedValue3 && (
+                  <View style={styles.oneline}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          3,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Course Title:</Text>
+                        <Text style={styles.text1}>{selectedValue3?.name}</Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 )}
-                {!!selectedValue5 && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        5,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Course Level:</Text>
-                      <Text style={styles.text1}>{selectedValue5?.name}</Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
-                )}
-              </View>
-              <View style={styles.oneline}>
-                {selectedValue6 || selectedValue7 ? (
-                  <TouchableOpacity
-                    onPress={() =>
-                      handleRemoveValue(
-                        6,
-                        selectedValue1,
-                        selectedValue2,
-                        selectedValue3,
-                        selectedValue4,
-                        selectedValue5,
-                        selectedValue6,
-                        selectedValue7
-                      )
-                    }
-                    style={styles.selectedValue}
-                  >
-                    <View style={styles.oneline}>
-                      <Text style={styles.text}>Fee Cost Range:</Text>
-                      <Text style={styles.text1}>
-                        {selectedValue6}-{selectedValue7}
-                      </Text>
-                      <Ionicons
-                        name="close-circle-outline"
-                        size={20}
-                        color="red"
-                      />
-                    </View>
-                  </TouchableOpacity>
-                ) : null}
+                <View style={[styles.oneline, { flexWrap: "wrap" }]}>
+                  {!!selectedValue4 && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          4,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Fee Type:</Text>
+                        <Text style={styles.text1}>{selectedValue4}</Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {!!selectedValue5 && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          5,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Course Level:</Text>
+                        <Text style={styles.text1}>{selectedValue5?.name}</Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <View style={styles.oneline}>
+                  {selectedValue6 || selectedValue7 ? (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleRemoveValue(
+                          6,
+                          selectedValue1,
+                          selectedValue2,
+                          selectedValue3,
+                          selectedValue4,
+                          selectedValue5,
+                          selectedValue6,
+                          selectedValue7
+                        )
+                      }
+                      style={styles.selectedValue}
+                    >
+                      <View style={styles.oneline}>
+                        <Text style={styles.text}>Fee Cost Range:</Text>
+                        <Text style={styles.text1}>
+                          {selectedValue6}-{selectedValue7}
+                        </Text>
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={20}
+                          color="red"
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  ) : null}
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        {!isLoading && !isFetching ? (
-          data?.data?.length ? (
-            <View>
-              <Text
-                style={{
-                  paddingHorizontal: 20,
-                  paddingTop: 15,
-                  fontSize: 18,
-                  fontWeight: "bold",
-                }}
-              >
-                {data.totalItems} results found!
-              </Text>
-              {filteredCourse.length > 0 ? (
-                <View>
+          {!isLoading && !isFetching ? (
+            data?.data?.length ? (
+              <View>
+                <Text
+                  style={{
+                    paddingHorizontal: 20,
+                    paddingTop: 15,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {data.totalItems} results found!
+                </Text>
+                {filteredCourse.length > 0 ? (
                   <FlatList
                     scrollIndicatorInsets={false}
                     ListFooterComponent={<View style={{ height: 500 }} />}
@@ -635,34 +575,34 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                       );
                     }}
                   />
-                </View>
-              ) : (
-                <View
-                  style={{ justifyContent: "center", alignContent: "center" }}
+                ) : (
+                  <View
+                    style={{ justifyContent: "center", alignContent: "center" }}
+                  >
+                    <Text style={{ alignSelf: "center", marginTop: 100 }}>
+                      University Not Found
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={{ height: SCREEN_HEIGHT }}>
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    marginTop: "90%",
+                  }}
                 >
-                  <Text style={{ alignSelf: "center", marginTop: 100 }}>
-                    University Not Found
-                  </Text>
-                </View>
-              )}
-            </View>
+                  No Courses Found!
+                </Text>
+              </View>
+            )
           ) : (
-            <View style={{ height: SCREEN_HEIGHT }}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  marginTop: "90%",
-                }}
-              >
-                No Courses Found!
-              </Text>
-            </View>
-          )
-        ) : (
-          <Skeleton />
-        )}
+            <Skeleton />
+          )}
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 });
 export default CourseCataloguesScreen;
@@ -824,11 +764,10 @@ const FliterModal = ({
     onSearch(query);
   };
 
-  return (
-    <Modal visible={showModal} transparent={true} animationType={"slide"}>
-      <ScrollView>
-        <View style={styles.modal}>
-          <TextInput placeholder="Search.." style={styles.searchInput} />
+  const renderDropdown = () => {
+    if (Platform.OS === "android") {
+      return (
+        <View>
           <Text style={{ padding: 20 }}>Select Location</Text>
           <View style={styles.btncontainer}>
             <Picker
@@ -890,26 +829,137 @@ const FliterModal = ({
               </View>
             </View>
           )}
-          <View>
-            <Text style={{ padding: 20 }}>Tuition Fee</Text>
-            <View style={styles.filterContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Min Price"
-                keyboardType="number-pad"
-                value={minPrice}
-                onChangeText={(text) => setMinPrice(text)}
-              />
-              <Text style={styles.text}>-</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Max Price"
-                keyboardType="number-pad"
-                value={maxPrice}
-                onChangeText={(text) => setMaxPrice(text)}
+        </View>
+      );
+    } else if (Platform.OS === "ios") {
+      return (
+        <View>
+          <Text style={{ paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
+            Select Location
+          </Text>
+          <SelectDropdown
+            data={locations}
+            defaultButtonText="Select Location"
+            onSelect={(item) => {
+              setSelectedLocation(item);
+              setSelectedSubLocation(null);
+              setSelectedTitle(null);
+            }}
+            buttonTextAfterSelection={(selectedItem) =>
+              selectedItem ? selectedItem.name : ""
+            }
+            rowTextForSelection={(item) => item.name}
+            buttonStyle={styles.btncontainer}
+            buttonTextStyle={styles.dropdownButtonText}
+            dropdownStyle={styles.dropdown}
+            rowStyle={styles.dropdownRowStyle}
+            rowTextStyle={styles.dropdownRowTextStyle}
+          />
+          {selectedLocation && (
+            <View>
+              <Text
+                style={{ paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}
+              >
+                Select SubLocation
+              </Text>
+              <SelectDropdown
+                data={subLocations}
+                defaultButtonText="Select SubLocation"
+                onSelect={(item) => setSelectedSubLocation(item)}
+                buttonTextAfterSelection={(selectedItem) =>
+                  selectedItem ? selectedItem.name : ""
+                }
+                rowTextForSelection={(item) => item.name}
+                buttonStyle={styles.btncontainer}
+                buttonTextStyle={styles.dropdownButtonText}
+                dropdownStyle={styles.dropdown}
+                rowStyle={styles.dropdownRowStyle}
+                rowTextStyle={styles.dropdownRowTextStyle}
               />
             </View>
+          )}
+          {selectedSubLocation && (
+            <View>
+              <Text
+                style={{ paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}
+              >
+                Select Title
+              </Text>
+              <SelectDropdown
+                data={titles}
+                defaultButtonText="Select Title"
+                onSelect={(item) => setSelectedTitle(item)}
+                buttonTextAfterSelection={(selectedItem) =>
+                  selectedItem ? selectedItem.title : ""
+                }
+                rowTextForSelection={(item) => item.title}
+                buttonStyle={styles.btncontainer}
+                buttonTextStyle={styles.dropdownButtonText}
+                dropdownStyle={styles.dropdown}
+                rowStyle={styles.dropdownRowStyle}
+                rowTextStyle={styles.dropdownRowTextStyle}
+              />
+            </View>
+          )}
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text>Dropdown not supported on this platform.</Text>
+        </View>
+      );
+    }
+  };
+  const renderDropdown1 = () => {
+    if (Platform.OS === "ios") {
+      return (
+        <View>
+          <View>
+            <Text
+              style={{ paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}
+            >
+              Select Payment Per
+            </Text>
+            <SelectDropdown
+              data={data1}
+              defaultButtonText="Select Payment Per"
+              onSelect={(item) => setSelectedFeeType(item.feeType)}
+              buttonTextAfterSelection={(selectedItem) => selectedItem?.feeType}
+              rowTextForSelection={(item) => item.feeType}
+              buttonStyle={styles.btncontainer}
+              buttonTextStyle={styles.dropdownButtonText}
+              dropdownStyle={styles.dropdown}
+              rowStyle={styles.dropdownRowStyle}
+              rowTextStyle={styles.dropdownRowTextStyle}
+            />
           </View>
+          <View>
+            <Text
+              style={{ paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}
+            >
+              Select Course Levels
+            </Text>
+            <SelectDropdown
+              data={filteredData}
+              defaultButtonText="Select Course Levels"
+              onSelect={(item) => setSelectedCourseLevels(item.level)}
+              buttonTextAfterSelection={(selectedItem) =>
+                selectedItem ? selectedItem?.level?.name : ""
+              }
+              rowTextForSelection={(item) => item.level.name}
+              buttonStyle={styles.btncontainer}
+              buttonTextStyle={styles.dropdownButtonText}
+              dropdownStyle={styles.dropdown}
+              rowStyle={styles.dropdownRowStyle}
+              rowTextStyle={styles.dropdownRowTextStyle}
+            />
+          </View>
+        </View>
+      );
+    } else if (Platform.OS === "android") {
+      return (
+        <View>
           <View>
             <Text style={{ padding: 20 }}>Select Payment Per</Text>
             <View style={styles.btncontainer}>
@@ -951,6 +1001,44 @@ const FliterModal = ({
               </Picker>
             </View>
           </View>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text>Dropdown not supported on this platform.</Text>
+        </View>
+      );
+    }
+  };
+
+  return (
+    <Modal visible={showModal} transparent={true} animationType={"slide"}>
+      <ScrollView>
+        <View style={styles.modal}>
+          <TextInput placeholder="Search.." style={styles.searchInput} />
+          {renderDropdown()}
+          <View>
+            <Text style={{ padding: 20 }}>Tuition Fee</Text>
+            <View style={styles.filterContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Min Price"
+                keyboardType="number-pad"
+                value={minPrice}
+                onChangeText={(text) => setMinPrice(text)}
+              />
+              <Text style={styles.text}>-</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Max Price"
+                keyboardType="number-pad"
+                value={maxPrice}
+                onChangeText={(text) => setMaxPrice(text)}
+              />
+            </View>
+          </View>
+          {renderDropdown1()}
           <View style={[styles.oneline, { padding: 20 }]}>
             <View style={{ flex: 1 }} />
             <TouchableOpacity
@@ -1054,6 +1142,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 17,
     justifyContent: "space-between",
+    marginTop: 10,
+    backgroundColor: "white",
   },
   searchInput1: {
     width: "40%",
@@ -1156,5 +1246,24 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "#DCDCDC",
     margin: 2,
+  },
+  dropdownButtonText: {
+    color: "black",
+    fontSize: 17,
+    justifyContent: "flex-end",
+  },
+
+  dropdown: {
+    borderRadius: 10,
+    width: SCREEN_WIDTH - 55,
+  },
+
+  dropdownRowStyle: {
+    backgroundColor: "#eff4f6",
+  },
+
+  dropdownRowTextStyle: {
+    color: "black",
+    fontSize: 15,
   },
 });

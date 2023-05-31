@@ -21,7 +21,6 @@ const AppStack = () => {
       <Stack.Screen
         name="Course Detail"
         component={CourseCatalogueDetailScreen}
-        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

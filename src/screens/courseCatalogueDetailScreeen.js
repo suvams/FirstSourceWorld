@@ -10,9 +10,11 @@ import {
   Linking,
   Share,
   Dimensions,
+  Platform,
 } from "react-native";
 import { RenderHTML } from "react-native-render-html";
 import { Picker } from "@react-native-picker/picker";
+import SelectDropdown from "react-native-select-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useGetCourseCatalogueDetailDataByIdQuery,
@@ -189,6 +191,164 @@ const CourseCatalogueDetailScreen = ({ route }) => {
       </View>
     );
   }
+
+  const renderDropdown = () => {
+    const countryCodeOptions = [
+      "+977 Nepal",
+      "+1 Canada and USA",
+      "+44 UK",
+      "+61 Australia",
+    ];
+    if (Platform.OS === "android") {
+      return (
+        <View>
+          <View style={styles.phoneContainer}>
+            <Picker
+              selectedValue={countryCode}
+              style={styles.countryCodePicker}
+              mode="dropdown"
+              onValueChange={(itemValue) => setCountryCode(itemValue)}
+            >
+              <Picker.Item label="+977 Nepal" value="+977" />
+              <Picker.Item label="+1 Canada and USA" value="+1" />
+              <Picker.Item label="+44 UK" value="+44" />
+              <Picker.Item label="+61 Australia" value="+61" />
+            </Picker>
+            <TextInput
+              placeholder="Phone"
+              value={phone}
+              style={styles.textInput4}
+              onChangeText={handlePhoneChange}
+              keyboardType="phone-pad"
+              onBlur={validatePhone}
+            />
+          </View>
+        </View>
+      );
+    } else if (Platform.OS === "ios") {
+      return (
+        <View style={styles.phoneContainer}>
+          <SelectDropdown
+            data={countryCodeOptions}
+            defaultValueByIndex={0}
+            onSelect={(itemValue) => setCountryCode(itemValue)}
+            buttonStyle={styles.btncontainer1}
+            buttonTextStyle={styles.dropdownButtonText}
+            dropdownStyle={styles.dropdown}
+            rowStyle={styles.dropdownRowStyle}
+            rowTextStyle={styles.dropdownRowTextStyle}
+          />
+          <TextInput
+            placeholder="Phone"
+            value={phone}
+            style={styles.textInput4}
+            onChangeText={handlePhoneChange}
+            keyboardType="phone-pad"
+            onBlur={validatePhone}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text>Dropdown not supported on this platform.</Text>
+        </View>
+      );
+    }
+  };
+
+  const renderDropdown1 = () => {
+    if (Platform.OS === "android") {
+      return (
+        <View>
+          <View style={styles.btncontainer}>
+            <Picker
+              selectedValue={account}
+              onValueChange={(itemValue) => {
+                setAccount(itemValue);
+                setEntity(null);
+              }}
+              mode="dropdown"
+            >
+              <Picker.Item label="Select Agency" value={null} />
+              {accounts?.map((item) => (
+                <Picker.Item label={item.name} value={item} key={item.name} />
+              ))}
+            </Picker>
+          </View>
+          {account && (
+            <View style={styles.btncontainer}>
+              <Picker
+                selectedValue={entity}
+                onValueChange={(itemValue) => {
+                  setEntity(itemValue);
+                }}
+                mode="dropdown"
+              >
+                <Picker.Item label="Select Entity" value={null} />
+                {accountEntity?.map((item) => (
+                  <Picker.Item
+                    label={item.name}
+                    value={item._id}
+                    key={item._id}
+                  />
+                ))}
+              </Picker>
+            </View>
+          )}
+        </View>
+      );
+    } else if (Platform.OS === "ios") {
+      return (
+        <View>
+          <SelectDropdown
+            data={accounts}
+            defaultButtonText="Select Agency"
+            onSelect={(item) => {
+              setAccount(item);
+              setEntity(null);
+            }}
+            buttonTextAfterSelection={(selectedItem) => {
+              return selectedItem.name;
+            }}
+            rowTextForSelection={(item) => {
+              return item.name;
+            }}
+            buttonStyle={styles.btncontainer}
+            buttonTextStyle={styles.dropdownButtonText}
+            dropdownStyle={styles.dropdown}
+            rowStyle={styles.dropdownRowStyle}
+            rowTextStyle={styles.dropdownRowTextStyle}
+          />
+
+          {account && (
+            <SelectDropdown
+              data={accountEntity}
+              defaultButtonText="Select Entity"
+              onSelect={(item) => setEntity(item._id)}
+              buttonTextAfterSelection={(selectedItem) => {
+                return selectedItem.name;
+              }}
+              rowTextForSelection={(item) => {
+                return item.name;
+              }}
+              buttonStyle={styles.btncontainer}
+              buttonTextStyle={styles.dropdownButtonText}
+              dropdownStyle={styles.dropdown}
+              rowStyle={styles.dropdownRowStyle}
+              rowTextStyle={styles.dropdownRowTextStyle}
+            />
+          )}
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text>Dropdown not supported on this platform.</Text>
+        </View>
+      );
+    }
+  };
   return (
     <View style={{ backgroundColor: "white" }}>
       <ScrollView ref={scrollViewRef} scrollIndicatorInsets={false}>
@@ -411,7 +571,7 @@ const CourseCatalogueDetailScreen = ({ route }) => {
               {emailError ? (
                 <Text style={styles.errorText}>{emailError}</Text>
               ) : null}
-              <View style={styles.phoneContainer}>
+              {/* <View style={styles.phoneContainer}>
                 <Picker
                   selectedValue={countryCode}
                   style={styles.countryCodePicker}
@@ -431,51 +591,12 @@ const CourseCatalogueDetailScreen = ({ route }) => {
                   keyboardType="phone-pad"
                   onBlur={validatePhone}
                 />
-              </View>
+              </View> */}
+              {renderDropdown()}
               {phoneError ? (
                 <Text style={styles.errorText}>{phoneError}</Text>
               ) : null}
-
-              <View style={styles.btncontainer}>
-                <Picker
-                  selectedValue={account}
-                  onValueChange={(itemValue) => {
-                    setAccount(itemValue);
-                    setEntity(null);
-                  }}
-                  mode="dropdown"
-                >
-                  <Picker.Item label="Select Agency" value={null} />
-                  {accounts?.map((item) => (
-                    <Picker.Item
-                      label={item.name}
-                      value={item}
-                      key={item.name}
-                    />
-                  ))}
-                </Picker>
-              </View>
-              {account && (
-                <View style={styles.btncontainer}>
-                  <Picker
-                    selectedValue={entity}
-                    onValueChange={(itemValue) => {
-                      setEntity(itemValue);
-                    }}
-                    mode="dropdown"
-                  >
-                    <Picker.Item label="Select Entity" value={null} />
-                    {accountEntity?.map((item) => (
-                      <Picker.Item
-                        label={item.name}
-                        value={item._id}
-                        key={item._id}
-                      />
-                    ))}
-                  </Picker>
-                </View>
-              )}
-
+              {renderDropdown1()}
               <TextInput
                 defaultValue={
                   "I am interested in applying for" +
@@ -551,16 +672,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffc6c4",
     padding: 5,
   },
-  btncontainer: {
-    width: "100%",
-    borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: "gray",
-    alignSelf: "center",
-    fontSize: 17,
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
   phoneContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -582,5 +693,44 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     marginTop: 5,
+  },
+  btncontainer: {
+    width: "100%",
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    fontSize: 17,
+    marginTop: 10,
+    backgroundColor: "white",
+  },
+  btncontainer1: {
+    width: "30%",
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    fontSize: 15,
+    height: 45,
+    marginTop: 10,
+    marginLeft: 5,
+    backgroundColor: "white",
+  },
+  dropdownButtonText: {
+    color: "black",
+    fontSize: 17,
+    justifyContent: "flex-end",
+  },
+
+  dropdown: {
+    borderRadius: 10,
+    width: SCREEN_WIDTH - 55,
+  },
+
+  dropdownRowStyle: {
+    backgroundColor: "#eff4f6",
+  },
+
+  dropdownRowTextStyle: {
+    color: "black",
+    fontSize: 15,
   },
 });
