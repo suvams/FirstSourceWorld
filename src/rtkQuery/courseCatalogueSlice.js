@@ -7,7 +7,7 @@ export const GetCourseCataloguesApiCall = createApi({
   endpoints: (builder) => ({
     getCourseCataloguesData: builder.query({
       query: (params) => ({
-        url: "/public/course-catalogues?page=1&size=1000000",
+        url: "/public/course-catalogues",
         method: "get",
         params,
       }),

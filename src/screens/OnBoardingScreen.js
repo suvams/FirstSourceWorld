@@ -24,7 +24,7 @@ const OnboardingScreen = ({ navigation }) => {
     if (!showOnboarding) {
       navigation.reset({
         index: 0,
-        routes: [{ name: "eduXGateway" }],
+        routes: [{ name: "Tab Stack" }],
       });
     }
   }, [showOnboarding, navigation]);

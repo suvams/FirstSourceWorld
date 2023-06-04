@@ -3,6 +3,7 @@ import AppStack from "./src/navigations/appStack";
 import { Provider } from "react-redux";
 import { store } from "./src/rtkQuery/store";
 import { LogBox } from "react-native";
+import ContainerScreen from "./src/screens/extra/share";
 
 export default function App() {
   LogBox.ignoreLogs(["Warnings:..."]);
@@ -11,6 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Provider store={store}>
         <AppStack />
+        {/* <ContainerScreen /> */}
       </Provider>
     </NavigationContainer>
   );

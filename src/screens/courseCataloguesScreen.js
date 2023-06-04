@@ -263,12 +263,6 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 style={{ height: 25, width: 25 }}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowModal(true)}>
-              <Image
-                source={require("../../assets/filter.png")}
-                style={{ height: 25, width: 25 }}
-              />
-            </TouchableOpacity>
           </View>
           <View style={{ marginLeft: 15, marginTop: 10 }}>
             <View>
