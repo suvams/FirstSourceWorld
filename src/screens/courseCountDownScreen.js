@@ -6,7 +6,7 @@ import {
   Modal,
   StyleSheet,
   TextInput,
-  StatusBar,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -65,6 +65,237 @@ const courses = [
   },
 ];
 
+const ICON_NAMES = [
+  "accessible",
+  "link",
+  "email",
+  "search",
+  "image",
+  "menu",
+  "radio",
+  "tab",
+  "timer",
+  "article",
+  "code",
+  "details",
+  "input",
+  "label",
+  "map",
+  "source",
+  "title",
+  "circle",
+  "filter",
+  "stop",
+  "forward",
+  "info",
+  "check",
+  "close",
+  "book",
+  "pause",
+  "mail",
+  "home",
+  "laptop",
+  "star",
+  "save",
+  "phone",
+  "inbox",
+  "lock",
+  "cloud",
+  "camera",
+  "delete",
+  "tag",
+  "flag",
+  "android",
+  "copyright",
+  "wifi",
+  "sync",
+  "login",
+  "logout",
+  "contacts",
+  "edit",
+  "warning",
+  "dashboard",
+  "adjust",
+  "archive",
+  "arrow-left",
+  "arrow-right",
+  "attachment",
+  "block",
+  "bookmark",
+  "bookmarks",
+  "brush",
+  "cake",
+  "chat",
+  "chevron-left",
+  "chevron-right",
+  "credit-card",
+  "crop",
+  "facebook",
+  "fingerprint",
+  "folder",
+  "help",
+  "keyboard",
+  "language",
+  "layers",
+  "list",
+  "location-pin",
+  "lock-open",
+  "loop",
+  "message",
+  "mic",
+  "mouse",
+];
+
+const BACKGROUND_COLORS = [
+  "white",
+  "lightblue",
+  "lightgreen",
+  "aliceblue",
+  "antiquewhite",
+  "aqua",
+  "aquamarine",
+  "azure",
+  "beige",
+  "bisque",
+  "blanchedalmond",
+  "blue",
+  "blueviolet",
+  "brown",
+  "burlywood",
+  "cadetblue",
+  "chartreuse",
+  "chocolate",
+  "coral",
+  "cornflowerblue",
+  "cornsilk",
+  "crimson",
+  "cyan",
+  "darkblue",
+  "darkcyan",
+  "darkgoldenrod",
+  "darkgray",
+  "darkgreen",
+  "darkgrey",
+  "darkkhaki",
+  "darkmagenta",
+  "darkolivegreen",
+  "darkorange",
+  "darkorchid",
+  "darkred",
+  "darksalmon",
+  "darkseagreen",
+  "darkslateblue",
+  "darkslategray",
+  "darkslategrey",
+  "darkturquoise",
+  "darkviolet",
+  "deeppink",
+  "deepskyblue",
+  "dimgray",
+  "dimgrey",
+  "dodgerblue",
+  "firebrick",
+  "floralwhite",
+  "forestgreen",
+  "fuchsia",
+  "gainsboro",
+  "ghostwhite",
+  "gold",
+  "goldenrod",
+  "gray",
+  "green",
+  "greenyellow",
+  "grey",
+  "honeydew",
+  "hotpink",
+  "indianred",
+  "indigo",
+  "ivory",
+  "khaki",
+  "lavender",
+  "lavenderblush",
+  "lawngreen",
+  "lemonchiffon",
+  "lightcoral",
+  "lightcyan",
+  "lightgoldenrodyellow",
+  "lightgray",
+  "lightgrey",
+  "lightpink",
+  "lightsalmon",
+  "lightseagreen",
+  "lightskyblue",
+  "lightslategray",
+  "lightslategrey",
+  "lightsteelblue",
+  "lightyellow",
+  "lime",
+  "limegreen",
+  "linen",
+  "magenta",
+  "maroon",
+  "mediumaquamarine",
+  "mediumblue",
+  "mediumorchid",
+  "mediumpurple",
+  "mediumseagreen",
+  "mediumslateblue",
+  "mediumspringgreen",
+  "mediumturquoise",
+  "mediumvioletred",
+  "midnightblue",
+  "mintcream",
+  "mistyrose",
+  "moccasin",
+  "navajowhite",
+  "navy",
+  "oldlace",
+  "olive",
+  "olivedrab",
+  "orange",
+  "orangered",
+  "orchid",
+  "palegoldenrod",
+  "palegreen",
+  "paleturquoise",
+  "palevioletred",
+  "papayawhip",
+  "peachpuff",
+  "peru",
+  "pink",
+  "plum",
+  "powderblue",
+  "purple",
+  "rebeccapurple",
+  "red",
+  "rosybrown",
+  "royalblue",
+  "saddlebrown",
+  "salmon",
+  "sandybrown",
+  "seagreen",
+  "seashell",
+  "sienna",
+  "silver",
+  "skyblue",
+  "slateblue",
+  "slategray",
+  "slategrey",
+  "snow",
+  "springgreen",
+  "steelblue",
+  "tan",
+  "teal",
+  "thistle",
+  "tomato",
+  "turquoise",
+  "violet",
+  "wheat",
+  "whitesmoke",
+  "yellow",
+  "yellowgreen",
+];
+
 const CourseCountDownScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
@@ -73,8 +304,14 @@ const CourseCountDownScreen = () => {
   const [countdowns, setCountdowns] = useState({});
   const [countdownName, setCountdownName] = useState("");
 
+  const SCREEN_HEIGHT = Dimensions.get("window").height;
+  const SCREEN_WIDTH = Dimensions.get("window").width;
+
   //Colors and Icons
-  const [selectedIcon, setSelectedIcon] = useState("add-circle");
+  const [selectedIcon, setSelectedIcon] = useState(ICON_NAMES[0]);
+  useEffect(() => {
+    setSelectedIcon(ICON_NAMES[0]);
+  }, []);
   const [selectedBackgroundColor, setSelectedBackgroundColor] =
     useState("white");
   const [courseIcons, setCourseIcons] = useState({});
@@ -135,8 +372,16 @@ const CourseCountDownScreen = () => {
   const ModalPreview = ({
     selectedCourse,
     selectedIcon,
+    countdownName,
     selectedBackgroundColor,
   }) => {
+    const renderSelectedIcon = () => {
+      if (ICON_NAMES.includes(selectedIcon)) {
+        return <MaterialIcons name={selectedIcon} size={60} color="black" />;
+      }
+      // Return a default icon or null if no match is found
+      return null;
+    };
     return (
       <View
         style={[
@@ -144,45 +389,29 @@ const CourseCountDownScreen = () => {
           { backgroundColor: selectedBackgroundColor },
         ]}
       >
-        <Text style={styles.modal2PreviewText}>Selected Course:</Text>
-        <Text>{selectedCourse?.name}</Text>
-
-        <Text style={styles.modal2PreviewText}>Selected Time:</Text>
-        <Text>
-          {selectedCourse && selectedCourse.upcomingEventDate.toDateString()}
-        </Text>
-
-        <Text style={styles.modal2PreviewText}>Selected Icon:</Text>
-        <View>
-          {/* Display the first icon as the default if no icon is selected */}
-          {(!selectedIcon || selectedIcon === "add-circle") && (
-            <MaterialIcons name="add-circle" size={40} color="black" />
-          )}
-          {selectedIcon === "check-circle" && (
-            <MaterialIcons name="check-circle" size={40} color="black" />
-          )}
-          {selectedIcon === "remove-circle" && (
-            <MaterialIcons name="remove-circle" size={40} color="black" />
-          )}
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ padding: 10 }}>{renderSelectedIcon()}</View>
+          <View style={{ width: 20 }} />
+          <View style={{ alignSelf: "center" }}>
+            {countdownName ? (
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                {countdownName}
+              </Text>
+            ) : (
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                {selectedCourse?.name}
+              </Text>
+            )}
+            <Text style={{ fontSize: 25 }}>
+              {selectedCourse &&
+                selectedCourse.upcomingEventDate.toDateString()}
+            </Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}>
+              {selectedCourse &&
+                calculateRemainingTime(selectedCourse.upcomingEventDate)}
+            </Text>
+          </View>
         </View>
-
-        <Text style={styles.modal2PreviewText}>Selected Background Color:</Text>
-        <View>
-          {/* Container to show the selected background color */}
-          {selectedBackgroundColor === "" && (
-            <View style={{ backgroundColor: "lightblue" }} />
-          )}
-          {selectedBackgroundColor !== "" && (
-            <View style={[{ backgroundColor: selectedBackgroundColor }]} />
-          )}
-        </View>
-
-        {/* Countdown */}
-        <Text style={styles.modal2PreviewText}>Countdown:</Text>
-        <Text>
-          {selectedCourse &&
-            calculateRemainingTime(selectedCourse.upcomingEventDate)}
-        </Text>
       </View>
     );
   };
@@ -193,6 +422,7 @@ const CourseCountDownScreen = () => {
         selectedCourse={selectedCourse}
         selectedIcon={selectedIcon}
         selectedBackgroundColor={selectedBackgroundColor}
+        countdownName={countdownName}
       />
     );
   };
@@ -262,11 +492,6 @@ const CourseCountDownScreen = () => {
         onRequestClose={handleCloseModal}
       >
         <View style={styles.modal1Container}>
-          <StatusBar
-            backgroundColor="transparent"
-            barStyle="dark-content"
-            translucent={true}
-          />
           <ScrollView>
             <TextInput
               style={styles.searchInput}
@@ -275,8 +500,7 @@ const CourseCountDownScreen = () => {
               onChangeText={handleSearch}
             />
 
-            {searchQuery ? (
-              // Render search results based on searchQuery
+            {filteredCourses.length > 0 ? (
               filteredCourses.map((course) => (
                 <TouchableOpacity
                   key={course.id}
@@ -285,50 +509,34 @@ const CourseCountDownScreen = () => {
                 >
                   <View
                     style={[
-                      styles.coursesContainer,
-                      { flexDirection: "row", flexWrap: "wrap" },
+                      styles.modal2ContainerBackgroundColor,
+                      {
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        marginLeft: 20,
+                        paddingLeft: 10,
+                        marginRight: 20,
+                      },
                     ]}
                   >
-                    <Ionicons name="school" size={35} color="red" />
+                    <Ionicons name="school" size={40} color="red" />
                     <View style={{ width: 20 }} />
                     <View>
-                      <Text style={styles.modal1Text}>{course.name}</Text>
-                      <Text style={styles.courseButtonText}>
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        {course.name}
+                      </Text>
+                      <Text style={{ fontSize: 20 }}>
                         {course.upcomingEventDate.toDateString()}
                       </Text>
                       {countdowns[course.id] && (
-                        <Text style={styles.modal1Text}>
-                          Countdown: {countdowns[course.id].countdown}
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))
-            ) : // Render all courses if searchQuery is empty
-            filteredCourses.length > 0 ? (
-              filteredCourses.map((course) => (
-                <TouchableOpacity
-                  key={course.id}
-                  style={styles.courseButton}
-                  onPress={() => handleCourseSelect(course)}
-                >
-                  <View
-                    style={[
-                      styles.coursesContainer,
-                      { flexDirection: "row", flexWrap: "wrap" },
-                    ]}
-                  >
-                    <Ionicons name="school" size={35} color="red" />
-                    <View style={{ width: 20 }} />
-                    <View>
-                      <Text style={styles.modal1Text}>{course.name}</Text>
-                      <Text style={styles.courseButtonText}>
-                        {course.upcomingEventDate.toDateString()}
-                      </Text>
-                      {countdowns[course.id] && (
-                        <Text style={styles.modal1Text}>
-                          Countdown: {countdowns[course.id].countdown}
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            color: "blue",
+                          }}
+                        >
+                          {countdowns[course.id].countdown}
                         </Text>
                       )}
                     </View>
@@ -336,7 +544,9 @@ const CourseCountDownScreen = () => {
                 </TouchableOpacity>
               ))
             ) : (
-              <Text>No courses found</Text>
+              <View style={[styles.noCoursesContainer, { marginTop: "70%" }]}>
+                <Text style={styles.noCoursesText}>No courses found</Text>
+              </View>
             )}
           </ScrollView>
           <TouchableOpacity
@@ -347,205 +557,192 @@ const CourseCountDownScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+
       <Modal visible={modalVisible1} animationType="slide">
         <View>
-          <StatusBar
-            backgroundColor="transparent"
-            barStyle="dark-content"
-            translucent={true}
-          />
           <View style={styles.modal2Container}>
-            <Text style={styles.modal2Text}>You are counting down for:</Text>
-            <Text>Enter your desired name for the course!!</Text>
-            <TextInput
-              style={styles.modal2TextContainer}
-              placeholder={selectedCourse?.name}
-              value={countdownName}
-              onChangeText={setCountdownName}
-            />
-            <Text style={styles.modal2Text}>
-              Last Date For Applying For The Courses:
-            </Text>
-            <Text>It is Fixed!</Text>
-            <Text style={styles.modal2TextContainer}>
-              {selectedCourse &&
-                selectedCourse.upcomingEventDate.toDateString()}
-            </Text>
-            <Text style={styles.modal2Text}>Remaining Time:</Text>
-            <Text>Time remaining to apply for the course...</Text>
-            <Text style={styles.modal2TextContainer}>
-              {selectedCourse &&
-                calculateRemainingTime(selectedCourse.upcomingEventDate)}
-            </Text>
-            <Text>Select Icon:</Text>
-            <View style={styles.modal2SelectIcons}>
-              <TouchableOpacity
-                onPress={() => handleIconSelect("add-circle")}
-                style={[selectedIcon === "add-circle"]}
-              >
-                <View
-                  style={[
-                    selectedIcon === "add-circle" && {
-                      borderColor: "black",
-                      borderWidth: 2,
-                    },
-                  ]}
+            <ScrollView>
+              <Text style={styles.modal2Text}>You are counting down for:</Text>
+              <Text>Enter your desired name for the course!!</Text>
+              <TextInput
+                style={styles.modal2TextContainer}
+                placeholder={selectedCourse?.name}
+                value={countdownName}
+                onChangeText={setCountdownName}
+              />
+              <Text style={styles.modal2Text}>
+                Last Date For Applying For The Courses:
+              </Text>
+              <Text>It is Fixed!</Text>
+              <Text style={styles.modal2TextContainer}>
+                {selectedCourse &&
+                  selectedCourse.upcomingEventDate.toDateString()}
+              </Text>
+              <Text style={styles.modal2Text}>Remaining Time:</Text>
+              <Text>Time remaining to apply for the course...</Text>
+              <Text style={styles.modal2TextContainer}>
+                {selectedCourse &&
+                  calculateRemainingTime(selectedCourse.upcomingEventDate)}
+              </Text>
+              <Text>Select Icon:</Text>
+              <View style={styles.modal2SelectIcons}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
                 >
-                  <MaterialIcons name="add-circle" size={40} color="black" />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleIconSelect("check-circle")}
-                style={[selectedIcon === "check-circle"]}
-              >
-                <View
-                  style={[
-                    selectedIcon === "check-circle" && {
-                      borderColor: "black",
-                      borderWidth: 2,
-                    },
-                  ]}
+                  {ICON_NAMES.map((iconName, index) => {
+                    if (!selectedIcon && index === 0) {
+                      // Set the first icon as the default selected icon
+                      handleIconSelect(iconName);
+                    }
+
+                    return (
+                      <TouchableOpacity
+                        key={iconName}
+                        onPress={() => handleIconSelect(iconName)}
+                        style={[
+                          selectedIcon === iconName && {
+                            borderColor: "black",
+                            borderWidth: 2,
+                          },
+                        ]}
+                      >
+                        <View style={{ padding: 10 }}>
+                          <MaterialIcons
+                            name={iconName}
+                            size={40}
+                            color="black"
+                          />
+                          {selectedIcon === iconName && (
+                            <View
+                              style={[
+                                { backgroundColor: selectedBackgroundColor },
+                              ]}
+                            />
+                          )}
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+              <Text>Select Background Color:</Text>
+              <View style={styles.modal2SelectColor}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
                 >
-                  <MaterialIcons name="check-circle" size={40} color="black" />
-                </View>
+                  {BACKGROUND_COLORS.map((color) => (
+                    <TouchableOpacity
+                      key={color}
+                      style={[
+                        styles.modal2SelectColorOption,
+                        { backgroundColor: color, margin: 10 },
+                        selectedBackgroundColor === color &&
+                          styles.selectedmodal2SelectColorOption,
+                      ]}
+                      onPress={() => handleBackgroundColorSelect(color)}
+                    >
+                      {selectedBackgroundColor === color && (
+                        <View
+                          style={[
+                            { backgroundColor: color, borderColor: "black" },
+                          ]}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={{ height: 20 }} />
+              <Text>Whwn you start countdown it looks like:</Text>
+              {renderPreview()}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleStartCountdown}
+              >
+                <Text style={styles.buttonText}>Start Countdown</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handleIconSelect("remove-circle")}
-                style={[selectedIcon === "remove-circle"]}
+                style={styles.button1}
+                onPress={handleCloseModal1}
               >
-                <View
-                  style={[
-                    selectedIcon === "remove-circle" && {
-                      borderColor: "black",
-                      borderWidth: 2,
-                    },
-                  ]}
-                >
-                  <MaterialIcons name="remove-circle" size={40} color="black" />
-                </View>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
-            </View>
-            <View style={styles.modal2SelectIcons}>
-              <TouchableOpacity
-                onPress={() => handleIconSelect("add-circle")}
-                style={[selectedIcon === "add-circle"]}
-              >
-                {/* Icon content */}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleIconSelect("check-circle")}
-                style={[selectedIcon === "check-circle"]}
-              >
-                {/* Icon content */}
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleIconSelect("remove-circle")}
-                style={[selectedIcon === "remove-circle"]}
-              >
-                {/* Icon content */}
-              </TouchableOpacity>
-            </View>
-            <Text>Select Background Color:</Text>
-            <View style={styles.modal2SelectColor}>
-              <TouchableOpacity
-                style={[
-                  styles.modal2SelectColorOption,
-                  { backgroundColor: "white" },
-                  selectedBackgroundColor === "white" &&
-                    styles.selectedmodal2SelectColorOption,
-                ]}
-                onPress={() => handleBackgroundColorSelect("white")}
-              >
-                {selectedBackgroundColor === "white" && (
-                  <View
-                    style={[{ backgroundColor: "white", borderColor: "black" }]}
-                  />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modal2SelectColorOption,
-                  { backgroundColor: "lightblue" },
-                  selectedBackgroundColor === "lightblue" &&
-                    styles.selectedmodal2SelectColorOption,
-                ]}
-                onPress={() => handleBackgroundColorSelect("lightblue")}
-              >
-                {selectedBackgroundColor === "lightblue" && (
-                  <View
-                    style={[
-                      { backgroundColor: "lightblue", borderColor: "black" },
-                    ]}
-                  />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modal2SelectColorOption,
-                  { backgroundColor: "lightgreen" },
-                  selectedBackgroundColor === "lightgreen" &&
-                    styles.selectedmodal2SelectColorOption,
-                ]}
-                onPress={() => handleBackgroundColorSelect("lightgreen")}
-              >
-                {selectedBackgroundColor === "lightgreen" && (
-                  <View
-                    style={[
-                      { backgroundColor: "lightgreen", borderColor: "black" },
-                    ]}
-                  />
-                )}
-              </TouchableOpacity>
-            </View>
-            {renderPreview()}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleStartCountdown}
-            >
-              <Text style={styles.buttonText}>Start Countdown</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button1}
-              onPress={handleCloseModal1}
-            >
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
+            </ScrollView>
           </View>
         </View>
       </Modal>
-      {Object.keys(countdowns).length > 0 ? (
-        Object.keys(countdowns).map((courseId) => {
-          const countdown = countdowns[courseId];
-          const course = courses.find(
-            (course) => course.id === parseInt(courseId)
-          );
-          const backgroundColor =
-            courseBackgroundColors[courseId] || selectedBackgroundColor;
-          const icon = courseIcons[courseId] || selectedIcon;
+      <View
+        style={{
+          backgroundColor: "white",
+          height: SCREEN_HEIGHT,
+          width: SCREEN_WIDTH,
+        }}
+      >
+        {Object.keys(countdowns).length > 0 ? (
+          Object.keys(countdowns).map((courseId) => {
+            const countdown = countdowns[courseId];
+            const course = courses.find(
+              (course) => course.id === parseInt(courseId)
+            );
+            const backgroundColor =
+              courseBackgroundColors[courseId] || selectedBackgroundColor;
+            const icon = courseIcons[courseId] || selectedIcon;
 
-          return (
-            <View
-              key={courseId}
-              style={[styles.container1, { backgroundColor }]}
-            >
-              <Text style={styles.countdownText}>{course.name}</Text>
-              <Text style={{ fontSize: 20 }}>
-                Countdown: {countdown.countdown}
-              </Text>
-              <Text style={{ color: "blue" }}>
-                Countdown Name: {countdown.countdownName}
-              </Text>
-              {icon && (
-                <View style={[styles.modal2SelectIcons, { backgroundColor }]}>
-                  <MaterialIcons name={icon} size={50} color="black" />
+            return (
+              <View
+                key={courseId}
+                style={[styles.container1, { backgroundColor }]}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  {icon && (
+                    <View
+                      style={[styles.modal2SelectIcons, { backgroundColor }]}
+                    >
+                      <MaterialIcons name={icon} size={50} color="black" />
+                    </View>
+                  )}
+                  <View style={{ width: 20 }} />
+                  <View style={{ alignSelf: "center" }}>
+                    {countdown.countdownName ? (
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        {countdown.countdownName}
+                      </Text>
+                    ) : (
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        {course.name}
+                      </Text>
+                    )}
+                    {/* <Text style={styles.countdownText}>{course.name}</Text>
+                    <Text style={{ color: "blue", fontSize: 20 }}>
+                      Countdown Name: {countdown.countdownName}
+                    </Text> */}
+                    <Text style={{ fontSize: 25 }}>
+                      {course.upcomingEventDate.toDateString()}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      Countdown: {countdown.countdown}
+                    </Text>
+                  </View>
                 </View>
-              )}
-            </View>
-          );
-        })
-      ) : (
-        <Text>Please add countdown</Text>
-      )}
+              </View>
+            );
+          })
+        ) : (
+          <View style={styles.noCoursesContainer}>
+            <Text style={styles.noCoursesText}>
+              No Countdown found !!! Please ADD Countdown
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -623,6 +820,7 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     borderRadius: 50,
     padding: 10,
+    zIndex: 999,
   },
   modal1Container: {
     flex: 1,
@@ -643,13 +841,13 @@ const styles = StyleSheet.create({
   },
   modal2Text: { fontSize: 25 },
   modal2SelectIcons: {
+    paddingTop: 10,
+    paddingBottom: 10,
     borderRadius: 75,
-    padding: 10,
     flexDirection: "row",
   },
   modal2SelectColor: {
     flexDirection: "row",
-    padding: 10,
   },
   modal2SelectColorOption: {
     width: 50,
@@ -659,7 +857,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   selectedmodal2SelectColorOption: {
-    borderColor: "red",
+    borderColor: "black",
   },
 
   // Modal 2 Preview
@@ -671,10 +869,19 @@ const styles = StyleSheet.create({
   modal2ContainerBackgroundColor: {
     borderWidth: 0.5,
     borderRadius: 8,
-    paddingLeft: 15,
     paddingTop: 15,
     paddingBottom: 15,
     marginTop: 10,
+  },
+
+  //No course
+  noCoursesContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noCoursesText: {
+    fontSize: 20,
   },
 });
 

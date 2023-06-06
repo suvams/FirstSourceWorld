@@ -2079,374 +2079,374 @@
 
 // export default CountdownExample;
 
-// import React, { useState, useEffect } from "react";
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   TouchableOpacity,
-//   TextInput,
-//   Modal,
-// } from "react-native";
-
-// const CountdownExample = () => {
-//   const [countdowns, setCountdowns] = useState({});
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [selectedCourse, setSelectedCourse] = useState(null);
-//   const [countdownName, setCountdownName] = useState("");
-//   const [modalVisible, setModalVisible] = useState(false);
-
-//   const courses = [
-//     {
-//       id: 1,
-//       name: "Course 1",
-//       upcomingEventDate: new Date("2023-06-01T12:00:00"), // set the upcoming event date for Course 1
-//       startTime: new Date("2023-06-01T10:00:00"), // set the start time for Course 1 (for countup)
-//     },
-//     {
-//       id: 2,
-//       name: "Course 2",
-//       upcomingEventDate: new Date("2023-06-05T09:30:00"), // set the upcoming event date for Course 2
-//       startTime: new Date("2023-06-05T08:00:00"), // set the start time for Course 2 (for countup)
-//     },
-//     {
-//       id: 3,
-//       name: "Course 3",
-//       upcomingEventDate: new Date("2023-06-10T18:15:00"), // set the upcoming event date for Course 3
-//       startTime: new Date("2023-06-10T17:30:00"), // set the start time for Course 3 (for countup)
-//     },
-//   ];
-
-//   const startCountdown = (course, name) => {
-//     if (countdowns[course.id]) {
-//       return; // Don't start a new countdown if one already exists for the course
-//     }
-
-//     const interval = setInterval(() => {
-//       const currentTime = Date.now();
-//       const remainingTime = course.upcomingEventDate - currentTime;
-
-//       if (remainingTime <= 0) {
-//         clearInterval(interval);
-//         setCountdowns((prevCountdowns) => {
-//           const updatedCountdowns = { ...prevCountdowns };
-//           delete updatedCountdowns[course.id];
-//           return updatedCountdowns;
-//         });
-//       } else {
-//         const seconds = Math.floor(remainingTime / 1000) % 60;
-//         const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
-//         const hours = Math.floor(remainingTime / 1000 / 60 / 60) % 24;
-//         const days = Math.floor(remainingTime / 1000 / 60 / 60 / 24);
-
-//         const countdown = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-//         setCountdowns((prevCountdowns) => ({
-//           ...prevCountdowns,
-//           [course.id]: { name, countdown, countdownName: name, interval },
-//         }));
-//       }
-//     }, 1000);
-//   };
-
-//   const startCountup = (course, name) => {
-//     if (countdowns[course.id]) {
-//       return; // Don't start a new countup if one already exists for the course
-//     }
-
-//     const interval = setInterval(() => {
-//       const currentTime = Date.now();
-//       const elapsedTime = currentTime - course.startTime;
-
-//       const seconds = Math.floor(elapsedTime / 1000) % 60;
-//       const minutes = Math.floor(elapsedTime / 1000 / 60) % 60;
-//       const hours = Math.floor(elapsedTime / 1000 / 60 / 60) % 24;
-//       const days = Math.floor(elapsedTime / 1000 / 60 / 60 / 24);
-
-//       const countup = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-//       setCountdowns((prevCountdowns) => ({
-//         ...prevCountdowns,
-//         [course.id]: { name, countup, countdownName: name, interval },
-//       }));
-//     }, 1000);
-//   };
-
-//   const handleSearch = (query) => {
-//     setSearchQuery(query);
-//     setSelectedCourse(null);
-//   };
-
-//   const handleCourseSelect = (course) => {
-//     setSelectedCourse(course);
-//     setModalVisible(true);
-//   };
-
-//   const handleStartCountdown = () => {
-//     startCountdown(selectedCourse, countdownName);
-//     setModalVisible(false);
-//     setCountdownName("");
-//   };
-
-//   useEffect(() => {
-//     return () => {
-//       // Cleanup function to clear all countdown intervals when the component unmounts
-//       Object.values(countdowns).forEach((countdownObj) =>
-//         clearInterval(countdownObj.interval)
-//       );
-//     };
-//   }, []);
-
-//   const filteredCourses = courses.filter((course) =>
-//     course.name.toLowerCase().includes(searchQuery.toLowerCase())
-//   );
-
-//   const calculateRemainingTime = (upcomingEventDate) => {
-//     const currentTime = new Date();
-//     const remainingTime = upcomingEventDate - currentTime;
-
-//     const seconds = Math.floor(remainingTime / 1000) % 60;
-//     const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
-//     const hours = Math.floor(remainingTime / 1000 / 60 / 60) % 24;
-//     const days = Math.floor(remainingTime / 1000 / 60 / 60 / 24);
-
-//     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <TextInput
-//         style={styles.searchInput}
-//         placeholder="Search for a course"
-//         value={searchQuery}
-//         onChangeText={handleSearch}
-//       />
-
-//       {!selectedCourse && (
-//         <View style={styles.coursesContainer}>
-//           {filteredCourses.map((course) => (
-//             <TouchableOpacity
-//               key={course.id}
-//               style={styles.courseButton}
-//               onPress={() => handleCourseSelect(course)}
-//             >
-//               <Text style={styles.courseButtonText}>{course.name}</Text>
-//             </TouchableOpacity>
-//           ))}
-//         </View>
-//       )}
-
-//       <Modal visible={modalVisible} animationType="slide">
-//         <View style={styles.modalContainer}>
-//           <Text style={styles.modalText}>Upcoming Event Date:</Text>
-//           <Text style={styles.modalText}>
-//             {selectedCourse && selectedCourse.upcomingEventDate.toDateString()}
-//           </Text>
-//           <Text style={styles.modalText}>Remaining Time:</Text>
-//           <Text style={styles.modalText}>
-//             {selectedCourse &&
-//               calculateRemainingTime(selectedCourse.upcomingEventDate)}
-//           </Text>
-//           <Text style={styles.modalText}>Enter Countdown Name:</Text>
-//           <TextInput
-//             style={styles.modalInput}
-//             placeholder="Countdown Name"
-//             value={countdownName}
-//             onChangeText={setCountdownName}
-//           />
-//           <TouchableOpacity
-//             style={styles.startButton}
-//             onPress={handleStartCountdown}
-//           >
-//             <Text style={styles.startButtonText}>Start Countdown </Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity
-//             style={styles.startButton}
-//             onPress={() => startCountup(selectedCourse, countdownName)}
-//           >
-//             <Text style={styles.startButtonText}>Start Countup</Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity
-//             style={styles.cancelButton}
-//             onPress={() => setModalVisible(false)}
-//           >
-//             <Text style={styles.cancelButtonText}>Cancel</Text>
-//           </TouchableOpacity>
-//         </View>
-//       </Modal>
-
-//       <View style={styles.countdownsContainer}>
-//         {Object.values(countdowns).map((countdown) => (
-//           <View key={countdown.countdownName} style={styles.countdownItem}>
-//             <Text style={styles.countdownName}>{countdown.countdownName}</Text>
-//             <Text style={styles.countdownText}>{countdown.countdown}</Text>
-//           </View>
-//         ))}
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 16,
-//   },
-//   searchInput: {
-//     marginBottom: 16,
-//     padding: 8,
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 4,
-//   },
-//   coursesContainer: {
-//     flex: 1,
-//   },
-//   courseButton: {
-//     paddingVertical: 8,
-//     paddingHorizontal: 16,
-//     marginBottom: 8,
-//     backgroundColor: "#f0f0f0",
-//     borderRadius: 4,
-//   },
-//   courseButtonText: {
-//     fontSize: 16,
-//   },
-//   modalContainer: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   modalText: {
-//     fontSize: 16,
-//     marginBottom: 8,
-//   },
-//   modalInput: {
-//     width: "80%",
-//     marginBottom: 16,
-//     padding: 8,
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 4,
-//   },
-//   startButton: {
-//     backgroundColor: "#1e90ff",
-//     paddingVertical: 8,
-//     paddingHorizontal: 16,
-//     borderRadius: 4,
-//     marginBottom: 8,
-//   },
-//   startButtonText: {
-//     fontSize: 16,
-//     color: "#fff",
-//   },
-//   cancelButton: {
-//     backgroundColor: "#ccc",
-//     paddingVertical: 8,
-//     paddingHorizontal: 16,
-//     borderRadius: 4,
-//   },
-//   cancelButtonText: {
-//     fontSize: 16,
-//     color: "#fff",
-//   },
-//   countdownsContainer: {
-//     marginTop: 16,
-//   },
-//   countdownItem: {
-//     marginBottom: 8,
-//   },
-//   countdownName: {
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-//   countdownText: {
-//     fontSize: 14,
-//   },
-// });
-
-// export default CountdownExample;
-
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+} from "react-native";
 
-const CountupExample = () => {
-  const upcomingEventDates = [
-    new Date("2023-06-01T12:00:00"), // Replace with your first upcoming event date
-    new Date("2023-06-00T09:30:00"), // Replace with your second upcoming event date
+const CountdownExample = () => {
+  const [countdowns, setCountdowns] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [countdownName, setCountdownName] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const courses = [
+    {
+      id: 1,
+      name: "Course 1",
+      upcomingEventDate: new Date("2023-06-01T12:00:00"), // set the upcoming event date for Course 1
+      startTime: new Date("2023-06-01T10:00:00"), // set the start time for Course 1 (for countup)
+    },
+    {
+      id: 2,
+      name: "Course 2",
+      upcomingEventDate: new Date("2023-06-05T09:30:00"), // set the upcoming event date for Course 2
+      startTime: new Date("2023-06-05T08:00:00"), // set the start time for Course 2 (for countup)
+    },
+    {
+      id: 3,
+      name: "Course 3",
+      upcomingEventDate: new Date("2023-06-10T18:15:00"), // set the upcoming event date for Course 3
+      startTime: new Date("2023-06-10T17:30:00"), // set the start time for Course 3 (for countup)
+    },
   ];
 
-  const [countups, setCountups] = useState([]);
-  const [showCountups, setShowCountups] = useState(false);
-
-  useEffect(() => {
-    let intervals = [];
-
-    if (showCountups) {
-      intervals = upcomingEventDates.map((eventDate) => {
-        return setInterval(() => {
-          const currentTime = Date.now();
-          const elapsedTime = currentTime - eventDate.getTime();
-
-          const seconds = Math.floor((elapsedTime / 1000) % 60);
-          const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
-          const hours = Math.floor((elapsedTime / 1000 / 60 / 60) % 24);
-          const days = Math.floor(elapsedTime / 1000 / 60 / 60 / 24);
-
-          const countupText =
-            elapsedTime >= 0
-              ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-              : "Event has passed";
-
-          setCountups((prevCountups) => {
-            const updatedCountups = [...prevCountups];
-            const index = updatedCountups.findIndex(
-              (countup) => countup.eventDate.getTime() === eventDate.getTime()
-            );
-            if (index !== -1) {
-              updatedCountups[index].countup = countupText;
-            } else {
-              updatedCountups.push({ eventDate, countup: countupText });
-            }
-            return updatedCountups;
-          });
-        }, 1000);
-      });
+  const startCountdown = (course, name) => {
+    if (countdowns[course.id]) {
+      return; // Don't start a new countdown if one already exists for the course
     }
 
-    return () => {
-      intervals.forEach((interval) => clearInterval(interval));
-    };
-  }, [showCountups]);
+    const interval = setInterval(() => {
+      const currentTime = Date.now();
+      const remainingTime = course.upcomingEventDate - currentTime;
 
-  const handleButtonPress = () => {
-    setShowCountups(true);
+      if (remainingTime <= 0) {
+        clearInterval(interval);
+        setCountdowns((prevCountdowns) => {
+          const updatedCountdowns = { ...prevCountdowns };
+          delete updatedCountdowns[course.id];
+          return updatedCountdowns;
+        });
+      } else {
+        const seconds = Math.floor(remainingTime / 1000) % 60;
+        const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
+        const hours = Math.floor(remainingTime / 1000 / 60 / 60) % 24;
+        const days = Math.floor(remainingTime / 1000 / 60 / 60 / 24);
+
+        const countdown = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+        setCountdowns((prevCountdowns) => ({
+          ...prevCountdowns,
+          [course.id]: { name, countdown, countdownName: name, interval },
+        }));
+      }
+    }, 1000);
+  };
+
+  const startCountup = (course, name) => {
+    if (countdowns[course.id]) {
+      return; // Don't start a new countup if one already exists for the course
+    }
+
+    const interval = setInterval(() => {
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - course.startTime;
+
+      const seconds = Math.floor(elapsedTime / 1000) % 60;
+      const minutes = Math.floor(elapsedTime / 1000 / 60) % 60;
+      const hours = Math.floor(elapsedTime / 1000 / 60 / 60) % 24;
+      const days = Math.floor(elapsedTime / 1000 / 60 / 60 / 24);
+
+      const countup = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+      setCountdowns((prevCountdowns) => ({
+        ...prevCountdowns,
+        [course.id]: { name, countup, countdownName: name, interval },
+      }));
+    }, 1000);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setSelectedCourse(null);
+  };
+
+  const handleCourseSelect = (course) => {
+    setSelectedCourse(course);
+    setModalVisible(true);
+  };
+
+  const handleStartCountdown = () => {
+    startCountdown(selectedCourse, countdownName);
+    setModalVisible(false);
+    setCountdownName("");
+  };
+
+  useEffect(() => {
+    return () => {
+      // Cleanup function to clear all countdown intervals when the component unmounts
+      Object.values(countdowns).forEach((countdownObj) =>
+        clearInterval(countdownObj.interval)
+      );
+    };
+  }, []);
+
+  const filteredCourses = courses.filter((course) =>
+    course.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const calculateRemainingTime = (upcomingEventDate) => {
+    const currentTime = new Date();
+    const remainingTime = upcomingEventDate - currentTime;
+
+    const seconds = Math.floor(remainingTime / 1000) % 60;
+    const minutes = Math.floor(remainingTime / 1000 / 60) % 60;
+    const hours = Math.floor(remainingTime / 1000 / 60 / 60) % 24;
+    const days = Math.floor(remainingTime / 1000 / 60 / 60 / 24);
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
   return (
     <View style={styles.container}>
-      {showCountups ? (
-        countups.map((countupObj, index) => (
-          <Text key={index} style={styles.countupText}>
-            {countupObj.eventDate.toDateString()}: {countupObj.countup}
-          </Text>
-        ))
-      ) : (
-        <Button title="Start Countup" onPress={handleButtonPress} />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for a course"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
+
+      {!selectedCourse && (
+        <View style={styles.coursesContainer}>
+          {filteredCourses.map((course) => (
+            <TouchableOpacity
+              key={course.id}
+              style={styles.courseButton}
+              onPress={() => handleCourseSelect(course)}
+            >
+              <Text style={styles.courseButtonText}>{course.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       )}
+
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>Upcoming Event Date:</Text>
+          <Text style={styles.modalText}>
+            {selectedCourse && selectedCourse.upcomingEventDate.toDateString()}
+          </Text>
+          <Text style={styles.modalText}>Remaining Time:</Text>
+          <Text style={styles.modalText}>
+            {selectedCourse &&
+              calculateRemainingTime(selectedCourse.upcomingEventDate)}
+          </Text>
+          <Text style={styles.modalText}>Enter Countdown Name:</Text>
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Countdown Name"
+            value={countdownName}
+            onChangeText={setCountdownName}
+          />
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={handleStartCountdown}
+          >
+            <Text style={styles.startButtonText}>Start Countdown </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={() => startCountup(selectedCourse, countdownName)}
+          >
+            <Text style={styles.startButtonText}>Start Countup</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <View style={styles.countdownsContainer}>
+        {Object.values(countdowns).map((countdown) => (
+          <View key={countdown.countdownName} style={styles.countdownItem}>
+            <Text style={styles.countdownName}>{countdown.countdownName}</Text>
+            <Text style={styles.countdownText}>{countdown.countdown}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 1,
+    padding: 16,
   },
-  countupText: {
-    fontSize: 24,
-    marginBottom: 10,
+  searchInput: {
+    marginBottom: 16,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+  },
+  coursesContainer: {
+    flex: 1,
+  },
+  courseButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 4,
+  },
+  courseButtonText: {
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  modalInput: {
+    width: "80%",
+    marginBottom: 16,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+  },
+  startButton: {
+    backgroundColor: "#1e90ff",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  startButtonText: {
+    fontSize: 16,
+    color: "#fff",
+  },
+  cancelButton: {
+    backgroundColor: "#ccc",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: "#fff",
+  },
+  countdownsContainer: {
+    marginTop: 16,
+  },
+  countdownItem: {
+    marginBottom: 8,
+  },
+  countdownName: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  countdownText: {
+    fontSize: 14,
   },
 });
 
-export default CountupExample;
+export default CountdownExample;
+
+// import React, { useState, useEffect } from "react";
+// import { View, Text, StyleSheet, Button } from "react-native";
+
+// const CountupExample = () => {
+//   const upcomingEventDates = [
+//     new Date("2023-06-01T12:00:00"), // Replace with your first upcoming event date
+//     new Date("2023-06-00T09:30:00"), // Replace with your second upcoming event date
+//   ];
+
+//   const [countups, setCountups] = useState([]);
+//   const [showCountups, setShowCountups] = useState(false);
+
+//   useEffect(() => {
+//     let intervals = [];
+
+//     if (showCountups) {
+//       intervals = upcomingEventDates.map((eventDate) => {
+//         return setInterval(() => {
+//           const currentTime = Date.now();
+//           const elapsedTime = currentTime - eventDate.getTime();
+
+//           const seconds = Math.floor((elapsedTime / 1000) % 60);
+//           const minutes = Math.floor((elapsedTime / 1000 / 60) % 60);
+//           const hours = Math.floor((elapsedTime / 1000 / 60 / 60) % 24);
+//           const days = Math.floor(elapsedTime / 1000 / 60 / 60 / 24);
+
+//           const countupText =
+//             elapsedTime >= 0
+//               ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+//               : "Event has passed";
+
+//           setCountups((prevCountups) => {
+//             const updatedCountups = [...prevCountups];
+//             const index = updatedCountups.findIndex(
+//               (countup) => countup.eventDate.getTime() === eventDate.getTime()
+//             );
+//             if (index !== -1) {
+//               updatedCountups[index].countup = countupText;
+//             } else {
+//               updatedCountups.push({ eventDate, countup: countupText });
+//             }
+//             return updatedCountups;
+//           });
+//         }, 1000);
+//       });
+//     }
+
+//     return () => {
+//       intervals.forEach((interval) => clearInterval(interval));
+//     };
+//   }, [showCountups]);
+
+//   const handleButtonPress = () => {
+//     setShowCountups(true);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       {showCountups ? (
+//         countups.map((countupObj, index) => (
+//           <Text key={index} style={styles.countupText}>
+//             {countupObj.eventDate.toDateString()}: {countupObj.countup}
+//           </Text>
+//         ))
+//       ) : (
+//         <Button title="Start Countup" onPress={handleButtonPress} />
+//       )}
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+//   countupText: {
+//     fontSize: 24,
+//     marginBottom: 10,
+//   },
+// });
+
+// export default CountupExample;

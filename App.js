@@ -12,7 +12,6 @@ export default function App() {
     <NavigationContainer>
       <Provider store={store}>
         <AppStack />
-        {/* <ContainerScreen /> */}
       </Provider>
     </NavigationContainer>
   );
