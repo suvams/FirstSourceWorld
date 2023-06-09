@@ -10,6 +10,7 @@ import {
   StatusBar,
   Image,
   Dimensions,
+  ScrollView,
   Animated,
   RefreshControl,
   SafeAreaView,
@@ -27,7 +28,6 @@ import {
   useLazyGetGlobalListDataQuery,
 } from "../rtkQuery/globalListSlice";
 import { useLazyGetUniversityListDataQuery } from "../rtkQuery/universityListSlice";
-import { ScrollView } from "react-native-gesture-handler";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -522,7 +522,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 {filteredCourse.length > 0 ? (
                   <FlatList
                     scrollIndicatorInsets={false}
-                    ListFooterComrponent={<View style={{ height: 700 }} />}
+                    ListFooterComponent={<View style={{ height: 500 }} />}
                     refreshControl={
                       <RefreshControl
                         refreshing={refreshing}
@@ -530,7 +530,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                       />
                     }
                     data={filteredCourse}
-                    keyExtractor={(item, index) => item?._id.toString()}
+                    keyExtractor={(item) => item?._id.toString()}
                     onEndReachedThreshold={0.5}
                     onEndReached={fetchMoreData}
                     renderItem={({ item }) => {
@@ -637,7 +637,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                   <View
                     style={{
                       width: "100%",
-                      height: 500,
+                      height: 100,
                     }}
                   >
                     <Skeleton />
