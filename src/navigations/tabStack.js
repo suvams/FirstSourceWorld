@@ -19,7 +19,7 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="SEARCH COURSES"
+        name="TIME COUNTDOWN"
         component={CourseCountDownScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

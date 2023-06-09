@@ -7,7 +7,7 @@ export const GetCourseCataloguesApiCall = createApi({
   endpoints: (builder) => ({
     getCourseCataloguesData: builder.query({
       query: (params) => ({
-        url: "/public/course-catalogues?page=1&size=1000000",
+        url: "/public/course-catalogues?page=1&size=10",
         method: "get",
         params,
       }),
@@ -26,8 +26,20 @@ export const GetCourseCataloguesApiCall = createApi({
     }),
     getAllCourseCataloguesData: builder.query({
       query: () => ({
-        url: "/public/course-catalogues?page=1&size=1000000",
+        url: "/public/course-catalogues?page=1&size=10",
       }),
+    }),
+    paginateData: builder.query({
+      query: (params) => {
+        console.log("params ", params);
+        return {
+          url: `/public/course-catalogues`,
+          params: {
+            ...params,
+            size: 10,
+          },
+        };
+      },
     }),
   }),
 });
@@ -39,4 +51,6 @@ export const {
   useGetSearchAllFilterDataQuery,
   useLazyGetSearchAllFilterDataQuery,
   useGetAllCourseCataloguesDataQuery,
+  usePaginateDataQuery,
+  useLazyPaginateDataQuery,
 } = GetCourseCataloguesApiCall;

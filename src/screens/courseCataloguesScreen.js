@@ -10,7 +10,6 @@ import {
   StatusBar,
   Image,
   Dimensions,
-  ScrollView,
   Animated,
   RefreshControl,
   SafeAreaView,
@@ -21,12 +20,15 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   useLazyGetCourseCataloguesDataQuery,
   useGetAllCourseCataloguesDataQuery,
+  useLazyPaginateDataQuery,
 } from "../rtkQuery/courseCatalogueSlice";
 import {
   useGetGlobalListDataQuery,
   useLazyGetGlobalListDataQuery,
 } from "../rtkQuery/globalListSlice";
 import { useLazyGetUniversityListDataQuery } from "../rtkQuery/universityListSlice";
+import { ScrollView } from "react-native-gesture-handler";
+
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -66,28 +68,78 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [selectedValue5, setSelectedValue5] = useState(null);
   const [selectedValue6, setSelectedValue6] = useState(null);
   const [selectedValue7, setSelectedValue7] = useState(null);
+  const [page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
+  const [paginating, setPaginating] = useState(false);
+
+  const [allCourses, setAllCourses] = useState([]);
 
   // RTK Query
 
   const [lazyCourseCatalogues, { data, isLoading, isFetching, error }] =
     useLazyGetCourseCataloguesDataQuery();
 
+  const [
+    fetchPaginatedCourses,
+    {
+      data: paginatedCourses,
+      currentData: currentCourses,
+      isFetching: isFetchingPaginated,
+    },
+  ] = useLazyPaginateDataQuery();
+
   const [lazyFetchSubLocactions] = useLazyGetGlobalListDataQuery();
 
   const [lazyFetchTitles] = useLazyGetUniversityListDataQuery();
 
+  const lastPage = Math.ceil(data?.totalItems / 100);
+
   const filteredCourse = React.useMemo(() => {
     return (
-      data?.data?.filter((el) =>
+      allCourses?.filter((el) =>
         el?.title?.toLowerCase()?.includes(search.toLocaleLowerCase())
       ) ?? []
     );
-  }, [data, search]);
+  }, [allCourses, search]);
 
+  React.useEffect(() => {
+    if (!data?.data) return;
+    if (currentCourses?.data) return;
+
+    setAllCourses(data?.data);
+  }, [data]);
+  React.useEffect(() => {
+    if (!currentCourses?.data) return;
+
+    console.log(currentCourses?.data[0], "new courses ", page);
+
+    setAllCourses((prev) => [...prev, ...currentCourses?.data]);
+  }, [currentCourses]);
   const handleSearchCourses = async (queryParams) => {
     setShowModal(false);
 
     await lazyCourseCatalogues({ ...queryParams }).unwrap();
+  };
+
+  const fetchMoreData = () => {
+    if (page <= lastPage) {
+      if (!endReached) {
+        setEndReached(true);
+        setPaginating(true);
+        fetchPaginatedCourses({
+          page: page + 1,
+          feeType: "Semester",
+          feeRange: "0,100000",
+        }).then(() => {
+          setPaginating(false);
+          setPage(page + 1);
+          setEndReached(false);
+        });
+      }
+    } else {
+      console.log("here");
+      return;
+    }
   };
 
   React.useEffect(() => {
@@ -113,6 +165,8 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
   React.useEffect(() => {
     lazyCourseCatalogues().unwrap();
   }, []);
+
+  console.log(allCourses.length, "total");
 
   if (isLoading) {
     return <Skeleton />;
@@ -468,7 +522,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 {filteredCourse.length > 0 ? (
                   <FlatList
                     scrollIndicatorInsets={false}
-                    ListFooterComponent={<View style={{ height: 500 }} />}
+                    ListFooterComrponent={<View style={{ height: 700 }} />}
                     refreshControl={
                       <RefreshControl
                         refreshing={refreshing}
@@ -476,7 +530,9 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                       />
                     }
                     data={filteredCourse}
-                    keyExtractor={(item) => item?._id.toString()}
+                    keyExtractor={(item, index) => item?._id.toString()}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={fetchMoreData}
                     renderItem={({ item }) => {
                       return (
                         <View>
@@ -490,7 +546,6 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                               })
                             }
                           >
-                            {/* <Text>{JSON.stringify(data, null, 30)}</Text> */}
                             <View style={styles.cataloguesListsContainer}>
                               <View style={styles.oneline}>
                                 <Image
@@ -507,7 +562,7 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                                   }}
                                 >
                                   <Text
-                                    style={{ fontSize: 23, fontWeight: "500" }}
+                                    style={{ fontSize: 18, fontWeight: "500" }}
                                   >
                                     {item?.title}
                                   </Text>
@@ -520,10 +575,10 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                                       { flexWrap: "wrap" },
                                     ]}
                                   >
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       {item?.location?.name}{" "}
                                     </Text>
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       {"   "}
                                       {item?.subLocations[0]?.name}
                                     </Text>
@@ -534,11 +589,11 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                                       { flexWrap: "wrap" },
                                     ]}
                                   >
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       {item?.duration?.name}
                                       {"   "}
                                     </Text>
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       {item?.level?.name} Level
                                     </Text>
                                   </View>
@@ -553,10 +608,10 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                                     >
                                       $ {item?.tuitionFee}{" "}
                                     </Text>
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       ({item?.currency?.code}){" "}
                                     </Text>
-                                    <Text style={{ fontSize: 16 }}>
+                                    <Text style={{ fontSize: 14 }}>
                                       {"/"}
                                       {item?.feeType}
                                     </Text>
@@ -578,6 +633,16 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                     </Text>
                   </View>
                 )}
+                {isFetchingPaginated ? (
+                  <View
+                    style={{
+                      width: "100%",
+                      height: 500,
+                    }}
+                  >
+                    <Skeleton />
+                  </View>
+                ) : null}
               </View>
             ) : (
               <View style={{ height: SCREEN_HEIGHT }}>
@@ -1106,8 +1171,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   screen: {
-    height: SCREEN_HEIGHT,
-    width: SCREEN_WIDTH,
     backgroundColor: "white",
   },
   modal: {
