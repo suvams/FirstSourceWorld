@@ -56,6 +56,19 @@ const Skeleton = () => (
     <View style={styles.skeletonItem} />
   </View>
 );
+const Skeleton1 = () => (
+  // Placeholder skeleton component
+  <View style={{ padding: 20, backgroundColor: "white" }}>
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+    <View style={styles.skeletonItem} />
+  </View>
+);
 const CourseCataloguesScreen = React.memo(({ navigation }) => {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -522,7 +535,9 @@ const CourseCataloguesScreen = React.memo(({ navigation }) => {
                 {filteredCourse.length > 0 ? (
                   <FlatList
                     scrollIndicatorInsets={false}
-                    ListFooterComponent={<View style={{ height: 500 }} />}
+                    ListFooterComponent={
+                      isFetchingPaginated ? <Skeleton1 /> : null
+                    }
                     refreshControl={
                       <RefreshControl
                         refreshing={refreshing}
